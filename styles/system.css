@@ -134,3 +134,42 @@
   margin: 0;
   cursor: pointer;
 }
+
+.exaa .carga-label {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 3px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.exaa .carga-label span {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.exaa .equipamentos-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.exaa .equipamento-header,
+.exaa .equipamento-row {
+  display: grid;
+  grid-template-columns: 20px 1fr 1fr 60px;
+  gap: 8px;
+  align-items: center;
+}
+
+.exaa .equipamento-header span {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.exaa .equipamento-row span {
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+}

@@ -1,4 +1,5 @@
 const {
+  ArrayField,
   BooleanField,
   HTMLField,
   NumberField,
@@ -45,7 +46,15 @@ export class PilotoDataModel extends foundry.abstract.TypeDataModel {
         piloto: bounded(0, 3),
         exacom: bounded(0, 3)
       }),
-      carga: new NumberField({ required: true, integer: true, min: 0, initial: 5 }),
+      carga: new StringField({ required: true, initial: "medio" }),
+      equipamentos: new ArrayField(
+        new SchemaField({
+          nome: new StringField({ required: true, blank: true, initial: "" }),
+          tipo: new StringField({ required: true, blank: true, initial: "" }),
+          porte: new NumberField({ required: true, integer: true, min: 1, max: 3, initial: 1 })
+        }),
+        { required: true, initial: Array(5).fill(null).map(() => ({ nome: "", tipo: "", porte: 1 })) }
+      ),
       defeito: new StringField({ required: true, blank: true, initial: "" }),
       origem: new StringField({ required: true, blank: true, initial: "" }),
       objetivo: new StringField({ required: true, blank: true, initial: "" }),

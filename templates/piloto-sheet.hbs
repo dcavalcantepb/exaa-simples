@@ -3,7 +3,7 @@
     <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
     <div class="header-fields">
       <input name="name" type="text" value="{{actor.name}}" placeholder="Nome do Piloto" />
-      <div class="grid four-columns">
+      <div class="grid three-columns">
         <div class="track-field">
           <span>EXApoints</span>
           <div class="checkbox-track">
@@ -26,7 +26,6 @@
             <input type="checkbox" class="track-checkbox" data-field="system.protagonismo" data-index="0" {{#if protagonismoChecked}}checked{{/if}} />
           </div>
         </div>
-        <label><span>Carga</span><input name="system.carga" type="number" value="{{system.carga}}" /></label>
       </div>
     </div>
   </header>
@@ -86,6 +85,34 @@
         <div class="grid two-columns">
           <label><span>Dano do Piloto: {{condicaoPiloto}}</span><input name="system.dano.piloto.value" type="number" value="{{system.dano.piloto.value}}" /></label>
           <label><span>Defeito</span><input name="system.defeito" type="text" value="{{system.defeito}}" /></label>
+        </div>
+      </section>
+
+      <section>
+        <h2>Equipamentos</h2>
+        <label class="carga-label">
+          <span>Carga</span>
+          <select name="system.carga">
+            {{#each cargaOptions}}
+              <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </label>
+        <div class="equipamentos-grid">
+          <div class="equipamento-header">
+            <span>#</span>
+            <span>Nome</span>
+            <span>Tipo</span>
+            <span>Porte</span>
+          </div>
+          {{#each equipamentosLista}}
+            <div class="equipamento-row">
+              <span>{{numero}}</span>
+              <input name="system.equipamentos.{{index}}.nome" type="text" value="{{nome}}" />
+              <input name="system.equipamentos.{{index}}.tipo" type="text" value="{{tipo}}" />
+              <input name="system.equipamentos.{{index}}.porte" type="number" value="{{porte}}" min="1" max="3" />
+            </div>
+          {{/each}}
         </div>
       </section>
     </div>

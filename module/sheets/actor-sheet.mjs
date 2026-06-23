@@ -31,6 +31,19 @@ export class EXAAActorSheet extends ActorSheet {
     context.exapointsBoxes = Array.from({ length: 3 }, (_, i) => i < this.actor.system.exapoints.value);
     context.sindromeBoxes = Array.from({ length: 3 }, (_, i) => i < this.actor.system.sindrome.value);
     context.protagonismoChecked = this.actor.system.protagonismo >= 1;
+    context.cargaOptions = [
+      { value: "leve",   label: "Leve (3 pts)",  selected: this.actor.system.carga === "leve" },
+      { value: "medio",  label: "Médio (5 pts)", selected: this.actor.system.carga === "medio" },
+      { value: "pesado", label: "Pesado (7 pts)", selected: this.actor.system.carga === "pesado" }
+    ];
+    const equips = this.actor.system.equipamentos ?? [];
+    context.equipamentosLista = Array.from({ length: 5 }, (_, i) => ({
+      nome:   equips[i]?.nome  ?? "",
+      tipo:   equips[i]?.tipo  ?? "",
+      porte:  equips[i]?.porte ?? 1,
+      index:  i,
+      numero: i + 1
+    }));
     return context;
   }
 

@@ -36,14 +36,38 @@ export class EXAAActorSheet extends ActorSheet {
       { value: "medio",  label: "Médio (5 pts)", selected: this.actor.system.carga === "medio" },
       { value: "pesado", label: "Pesado (7 pts)", selected: this.actor.system.carga === "pesado" }
     ];
+    const TIPO_OPTIONS = [
+      { value: "",             label: "Vazio" },
+      { value: "arma-fogo",   label: "Arma de Fogo" },
+      { value: "arma-branca", label: "Arma Branca" },
+      { value: "ferramenta",  label: "Ferramenta" },
+      { value: "protecao",    label: "Proteção" }
+    ];
+    const PORTE_OPTIONS = [
+      { value: 0, label: "Vazio" },
+      { value: 1, label: "Leve (1 pt)" },
+      { value: 2, label: "Médio (2 pts)" },
+      { value: 3, label: "Pesado (3 pts)" }
+    ];
+    const CARGA_MAX = { leve: 3, medio: 5, pesado: 7 };
     const equips = this.actor.system.equipamentos ?? [];
-    context.equipamentosLista = Array.from({ length: 5 }, (_, i) => ({
-      nome:   equips[i]?.nome  ?? "",
-      tipo:   equips[i]?.tipo  ?? "",
-      porte:  equips[i]?.porte ?? 1,
-      index:  i,
-      numero: i + 1
-    }));
+    context.equipamentosLista = Array.from({ length: 5 }, (_, i) => {
+      const e = equips[i] ?? {};
+      const tipoVal  = e.tipo  ?? "";
+      const porteVal = e.porte ?? 0;
+      return {
+        nome:  e.nome ?? "",
+        tipo:  tipoVal,
+        porte: porteVal,
+        index: i,
+        numero: i + 1,
+        tipoOptions:  TIPO_OPTIONS.map(o => ({ ...o, selected: o.value === tipoVal })),
+        porteOptions: PORTE_OPTIONS.map(o => ({ ...o, selected: o.value === porteVal }))
+      };
+    });
+    context.porteTotal    = equips.reduce((sum, e) => sum + (e?.porte ?? 0), 0);
+    context.cargaMax      = CARGA_MAX[this.actor.system.carga] ?? 5;
+    context.cargaExcedida = context.porteTotal > context.cargaMax;
     return context;
   }
 

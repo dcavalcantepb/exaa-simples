@@ -173,3 +173,35 @@
   font-weight: 700;
   font-size: 0.8rem;
 }
+
+.exaa .equipamento-total {
+  display: grid;
+  grid-template-columns: 20px 1fr 1fr 60px;
+  gap: 8px;
+  align-items: center;
+  border-top: 1px solid #777;
+  padding-top: 6px;
+  margin-top: 2px;
+}
+
+.exaa .total-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  text-align: right;
+}
+
+.exaa .total-value {
+  text-align: center;
+  font-weight: 700;
+}
+
+.exaa .carga-alerta {
+  margin-top: 8px;
+  padding: 6px 10px;
+  border: 1px solid #c00;
+  border-radius: 3px;
+  color: #c00;
+  font-size: 0.85rem;
+  font-weight: 700;
+}

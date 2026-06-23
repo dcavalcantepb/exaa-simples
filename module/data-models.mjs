@@ -51,9 +51,9 @@ export class PilotoDataModel extends foundry.abstract.TypeDataModel {
         new SchemaField({
           nome: new StringField({ required: true, blank: true, initial: "" }),
           tipo: new StringField({ required: true, blank: true, initial: "" }),
-          porte: new NumberField({ required: true, integer: true, min: 1, max: 3, initial: 1 })
+          porte: new NumberField({ required: true, integer: true, min: 0, max: 3, initial: 0 })
         }),
-        { required: true, initial: Array(5).fill(null).map(() => ({ nome: "", tipo: "", porte: 1 })) }
+        { required: true, initial: Array(5).fill(null).map(() => ({ nome: "", tipo: "", porte: 0 })) }
       ),
       defeito: new StringField({ required: true, blank: true, initial: "" }),
       origem: new StringField({ required: true, blank: true, initial: "" }),

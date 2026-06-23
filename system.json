@@ -41,5 +41,7 @@
     "distance": 1,
     "units": "m"
   },
-  "primaryTokenAttribute": "dano.piloto"
-}
+  "primaryTokenAttribute": "dano.piloto",
+  "url": "https://github.com/dcavalcantepb/exaa-simples",
+  "manifest": "https://raw.githubusercontent.com/dcavalcantepb/exaa-simples/main/system.json",
+  "download": "https://github.com/dcavalcantepb/exaa-simples/releases/download/v0.1.0/exaa-simples-v0.1.0.zip"

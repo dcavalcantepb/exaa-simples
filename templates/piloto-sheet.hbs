@@ -4,9 +4,28 @@
     <div class="header-fields">
       <input name="name" type="text" value="{{actor.name}}" placeholder="Nome do Piloto" />
       <div class="grid four-columns">
-        <label><span>EXApoints</span><input name="system.exapoints.value" type="number" value="{{system.exapoints.value}}" /></label>
-        <label><span>Marcas</span><input name="system.sindrome.value" type="number" value="{{system.sindrome.value}}" /></label>
-        <label><span>Protagonismo</span><input name="system.protagonismo" type="number" value="{{system.protagonismo}}" /></label>
+        <div class="track-field">
+          <span>EXApoints</span>
+          <div class="checkbox-track">
+            {{#each exapointsBoxes}}
+              <input type="checkbox" class="track-checkbox" data-field="system.exapoints.value" data-index="{{@index}}" {{#if this}}checked{{/if}} />
+            {{/each}}
+          </div>
+        </div>
+        <div class="track-field">
+          <span>Marcas</span>
+          <div class="checkbox-track">
+            {{#each sindromeBoxes}}
+              <input type="checkbox" class="track-checkbox" data-field="system.sindrome.value" data-index="{{@index}}" {{#if this}}checked{{/if}} />
+            {{/each}}
+          </div>
+        </div>
+        <div class="track-field">
+          <span>Protagonismo</span>
+          <div class="checkbox-track">
+            <input type="checkbox" class="track-checkbox" data-field="system.protagonismo" data-index="0" {{#if protagonismoChecked}}checked{{/if}} />
+          </div>
+        </div>
         <label><span>Carga</span><input name="system.carga" type="number" value="{{system.carga}}" /></label>
       </div>
     </div>

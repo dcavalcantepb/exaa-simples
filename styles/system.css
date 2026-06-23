@@ -108,3 +108,29 @@
   text-transform: capitalize;
   opacity: 0.75;
 }
+
+.exaa .track-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-weight: 700;
+}
+
+.exaa .track-field > span {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.exaa .checkbox-track {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  height: 28px;
+}
+
+.exaa .checkbox-track input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  cursor: pointer;
+}

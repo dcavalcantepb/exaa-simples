@@ -28,6 +28,9 @@ export class EXAAActorSheet extends ActorSheet {
     context.nucleos = CONFIG.EXAA.nucleos;
     context.condicaoPiloto = this.actor.condicaoPiloto;
     context.condicaoEXACOM = this.actor.condicaoEXACOM;
+    context.exapointsBoxes = Array.from({ length: 3 }, (_, i) => i < this.actor.system.exapoints.value);
+    context.sindromeBoxes = Array.from({ length: 3 }, (_, i) => i < this.actor.system.sindrome.value);
+    context.protagonismoChecked = this.actor.system.protagonismo >= 1;
     return context;
   }
 
@@ -41,6 +44,24 @@ export class EXAAActorSheet extends ActorSheet {
       const modificador = html.find("[name='roll-modificador']").val();
       const exapoints = html.find("[name='roll-exapoints']").val();
       this.actor.rolarTeste({ atributo, habilidade, modificador, exapoints });
+    });
+
+    html.find(".track-checkbox").on("click", async event => {
+      event.preventDefault();
+      const el = event.currentTarget;
+      const field = el.dataset.field;
+      const index = parseInt(el.dataset.index);
+      const currentValue = foundry.utils.getProperty(this.actor, field);
+      const newValue = currentValue === index + 1 ? index : index + 1;
+
+      await this.actor.update({ [field]: newValue });
+
+      if (field === "system.sindrome.value" && newValue >= this.actor.system.sindrome.max) {
+        ChatMessage.create({
+          content: "<p>Você desenvolveu a Síndrome, sua aventura chegou ao fim.</p>",
+          speaker: ChatMessage.getSpeaker({ actor: this.actor })
+        });
+      }
     });
   }
 }

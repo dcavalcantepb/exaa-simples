@@ -11,7 +11,7 @@ import { EXAAItemSheet } from "./module/sheets/item-sheet.mjs";
 Hooks.once("init", () => {
   CONFIG.EXAA = {
     atributos: {
-      fisico: "Fisico",
+      fisico: "Físico",
       agilidade: "Agilidade",
       intelecto: "Intelecto",
       vontade: "Vontade"
@@ -19,15 +19,15 @@ Hooks.once("init", () => {
     habilidades: {
       atletismo: "Atletismo",
       combate: "Combate",
-      sobrevivencia: "Sobrevivencia",
+      sobrevivencia: "Sobrevivência",
       pontaria: "Pontaria",
       furtividade: "Furtividade",
       pilotagem: "Pilotagem",
-      percepcao: "Percepcao",
-      tecnica: "Tecnica",
+      percepcao: "Percepção",
+      tecnica: "Técnica",
       medicina: "Medicina",
       comando: "Comando",
-      influencia: "Influencia",
+      influencia: "Influência",
       disciplina: "Disciplina"
     },
     nucleos: {

@@ -1,0 +1,45 @@
+{
+  "id": "exaa-simples",
+  "title": "EXAA Simples",
+  "description": "Sistema simples para jogar EX:AA - Alvorada de Aco no Foundry VTT.",
+  "version": "0.1.0",
+  "compatibility": {
+    "minimum": 13,
+    "verified": 13
+  },
+  "authors": [
+    {
+      "name": "Danilo Cavalcante"
+    }
+  ],
+  "esmodules": [
+    "exaa-simples.mjs"
+  ],
+  "styles": [
+    "styles/system.css"
+  ],
+  "languages": [
+    {
+      "lang": "pt-BR",
+      "name": "Portugues (Brasil)",
+      "path": "lang/pt-BR.json"
+    }
+  ],
+  "documentTypes": {
+    "Actor": {
+      "piloto": {},
+      "ameaca": {}
+    },
+    "Item": {
+      "equipamento": {},
+      "modulo": {}
+    }
+  },
+  "socket": false,
+  "initiative": null,
+  "grid": {
+    "distance": 1,
+    "units": "m"
+  },
+  "primaryTokenAttribute": "dano.piloto"
+}

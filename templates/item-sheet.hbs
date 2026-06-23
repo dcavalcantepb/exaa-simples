@@ -1,0 +1,29 @@
+<form class="{{cssClass}}" autocomplete="off">
+  <header class="sheet-header">
+    <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+    <div class="header-fields">
+      <input name="name" type="text" value="{{item.name}}" placeholder="Nome" />
+      <p class="item-type">{{item.type}}</p>
+    </div>
+  </header>
+
+  {{#if isEquipamento}}
+    <section class="grid three-columns">
+      <label><span>Tipo</span><input name="system.tipo" type="text" value="{{system.tipo}}" /></label>
+      <label><span>Porte</span><input name="system.porte" type="text" value="{{system.porte}}" /></label>
+      <label><span>Custo</span><input name="system.custo" type="number" value="{{system.custo}}" /></label>
+    </section>
+  {{/if}}
+
+  {{#if isModulo}}
+    <section class="grid two-columns">
+      <label><span>Categoria</span><input name="system.categoria" type="text" value="{{system.categoria}}" /></label>
+      <label><span>Nucleo Relacionado</span><input name="system.nucleoRelacionado" type="text" value="{{system.nucleoRelacionado}}" /></label>
+    </section>
+  {{/if}}
+
+  <section>
+    <h2>Descricao</h2>
+    {{editor system.descricao target="system.descricao" button=true owner=owner editable=editable}}
+  </section>
+</form>

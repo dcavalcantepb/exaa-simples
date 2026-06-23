@@ -1,0 +1,100 @@
+<form class="{{cssClass}}" autocomplete="off">
+  <header class="sheet-header">
+    <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+    <div class="header-fields">
+      <input name="name" type="text" value="{{actor.name}}" placeholder="Nome do Piloto" />
+      <div class="grid four-columns">
+        <label><span>EXApoints</span><input name="system.exapoints.value" type="number" value="{{system.exapoints.value}}" /></label>
+        <label><span>Marcas</span><input name="system.sindrome.value" type="number" value="{{system.sindrome.value}}" /></label>
+        <label><span>Protagonismo</span><input name="system.protagonismo" type="number" value="{{system.protagonismo}}" /></label>
+        <label><span>Carga</span><input name="system.carga" type="number" value="{{system.carga}}" /></label>
+      </div>
+    </div>
+  </header>
+
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="piloto">Piloto</a>
+    <a class="item" data-tab="exacom">EXACOM</a>
+    <a class="item" data-tab="background">Background</a>
+    <a class="item" data-tab="notas">Notas</a>
+  </nav>
+
+  <section class="sheet-body">
+    <div class="tab" data-group="primary" data-tab="piloto">
+      <section>
+        <h2>Teste de Habilidade</h2>
+        <div class="roll-bar">
+          <label>
+            <span>Atributo</span>
+            <select name="roll-atributo">
+              {{#each atributos as |label key|}}<option value="{{key}}">{{label}}</option>{{/each}}
+            </select>
+          </label>
+          <label><span>Modificador</span><input name="roll-modificador" type="number" value="0" /></label>
+          <label><span>EXApoints</span><input name="roll-exapoints" type="number" value="0" /></label>
+        </div>
+      </section>
+
+      <section>
+        <h2>Atributos</h2>
+        <div class="grid four-columns">
+          {{#each atributos as |label key|}}
+            <label>
+              <span>{{label}}</span>
+              <input name="system.atributos.{{key}}.value" type="number" value="{{lookup (lookup ../system.atributos key) "value"}}" />
+            </label>
+          {{/each}}
+        </div>
+      </section>
+
+      <section>
+        <h2>Habilidades</h2>
+        <div class="skills-grid">
+          {{#each habilidades as |label key|}}
+            <div class="skill-row">
+              <button type="button" data-roll-skill="{{key}}">Rolar</button>
+              <label>
+                <span>{{label}}</span>
+                <input name="system.habilidades.{{key}}.value" type="number" value="{{lookup (lookup ../system.habilidades key) "value"}}" />
+              </label>
+            </div>
+          {{/each}}
+        </div>
+      </section>
+
+      <section>
+        <h2>Condicao</h2>
+        <div class="grid two-columns">
+          <label><span>Dano do Piloto: {{condicaoPiloto}}</span><input name="system.dano.piloto.value" type="number" value="{{system.dano.piloto.value}}" /></label>
+          <label><span>Defeito</span><input name="system.defeito" type="text" value="{{system.defeito}}" /></label>
+        </div>
+      </section>
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="exacom">
+      <section class="grid two-columns">
+        <label><span>Nome</span><input name="system.exacom.nome" type="text" value="{{system.exacom.nome}}" /></label>
+        <label><span>Nucleo</span><input name="system.exacom.nucleo" type="text" value="{{system.exacom.nucleo}}" /></label>
+        <label><span>Dano do EXACOM: {{condicaoEXACOM}}</span><input name="system.dano.exacom.value" type="number" value="{{system.dano.exacom.value}}" /></label>
+      </section>
+      <section class="grid two-columns">
+        <label><span>Arma Primaria</span><input name="system.exacom.armaPrimaria" type="text" value="{{system.exacom.armaPrimaria}}" /></label>
+        <label><span>Arma Secundaria</span><input name="system.exacom.armaSecundaria" type="text" value="{{system.exacom.armaSecundaria}}" /></label>
+        <label><span>Suporte</span><input name="system.exacom.suporte" type="text" value="{{system.exacom.suporte}}" /></label>
+        <label><span>Blindagem</span><input name="system.exacom.blindagem" type="text" value="{{system.exacom.blindagem}}" /></label>
+      </section>
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="background">
+      <section class="grid three-columns">
+        <label><span>Origem</span><textarea name="system.origem">{{system.origem}}</textarea></label>
+        <label><span>Objetivo</span><textarea name="system.objetivo">{{system.objetivo}}</textarea></label>
+        <label><span>Reves</span><textarea name="system.reves">{{system.reves}}</textarea></label>
+      </section>
+    </div>
+
+    <div class="tab" data-group="primary" data-tab="notas">
+      {{editor system.notas target="system.notas" button=true owner=owner editable=editable}}
+    </div>
+  </section>
+</form>

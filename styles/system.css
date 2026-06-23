@@ -1,0 +1,110 @@
+.exaa.sheet form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.exaa .sheet-header {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.exaa .profile-img {
+  width: 104px;
+  height: 104px;
+  object-fit: cover;
+  border: 1px solid #777;
+}
+
+.exaa .header-fields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.exaa input[name="name"] {
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.exaa .grid {
+  display: grid;
+  gap: 8px;
+}
+
+.exaa .one-column {
+  grid-template-columns: 1fr;
+}
+
+.exaa .two-columns {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.exaa .three-columns {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.exaa .four-columns {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.exaa label {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-weight: 700;
+}
+
+.exaa label span {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.exaa textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.exaa .sheet-tabs {
+  display: flex;
+  gap: 8px;
+  border-top: 1px solid #777;
+  border-bottom: 1px solid #777;
+  padding: 6px 0;
+}
+
+.exaa .sheet-tabs .item {
+  padding: 4px 8px;
+  font-weight: 700;
+}
+
+.exaa .roll-bar {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 8px;
+}
+
+.exaa .skills-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.exaa .skill-row {
+  display: grid;
+  grid-template-columns: 74px 1fr;
+  gap: 8px;
+  align-items: end;
+}
+
+.exaa .editor {
+  min-height: 220px;
+}
+
+.exaa .item-type {
+  margin: 0;
+  text-transform: capitalize;
+  opacity: 0.75;
+}

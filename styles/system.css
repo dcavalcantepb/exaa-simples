@@ -90,6 +90,11 @@
   padding: 3px 6px;
 }
 
+.exaa select option {
+  background: #1D1340;
+  color: #E8DEFF;
+}
+
 .exaa input:not([type="checkbox"]):not([name="name"]):focus,
 .exaa select:focus,
 .exaa textarea:focus {
@@ -446,7 +451,7 @@
 .exaa .equipamento-header,
 .exaa .equipamento-row {
   display: grid;
-  grid-template-columns: 20px 1fr 1fr 60px;
+  grid-template-columns: 20px 2fr 1fr 1fr;
   gap: 8px;
   align-items: center;
 }
@@ -467,7 +472,7 @@
 
 .exaa .equipamento-total {
   display: grid;
-  grid-template-columns: 20px 1fr 1fr 60px;
+  grid-template-columns: 20px 2fr 1fr 1fr;
   gap: 8px;
   align-items: center;
   border-top: 1px solid #6C32A666;

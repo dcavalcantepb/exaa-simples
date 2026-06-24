@@ -205,3 +205,95 @@
   font-size: 0.85rem;
   font-weight: 700;
 }
+
+/* --- Chat: Teste de Habilidade --- */
+.exaa-roll-msg p { margin: 4px 0; }
+
+.exaa-dice-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0;
+}
+
+.exaa-dice-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.exaa-dice-values { display: flex; gap: 4px; flex-wrap: wrap; }
+
+.exaa-die {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 2px solid #555;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  background: #e8e0d0;
+}
+
+.exaa-die.exa {
+  border-color: #b8860b;
+  background: #fff8dc;
+  color: #7a5800;
+}
+
+.exaa-die.winner {
+  border-color: #2a7a2a;
+  background: #d4edda;
+  color: #155724;
+  box-shadow: 0 0 4px #2a7a2a88;
+}
+
+.exaa-die.exa.winner {
+  border-color: #c8a000;
+  background: #fff3a0;
+  color: #6b4f00;
+  box-shadow: 0 0 4px #c8a00088;
+}
+
+.exaa-die.miss {
+  border-color: #c00;
+  background: #fde;
+  color: #c00;
+}
+
+.exaa-resultado {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-top: 6px !important;
+}
+
+.exaa-consequence {
+  font-size: 0.85rem;
+  color: #c00;
+  font-weight: 700;
+  margin-top: 4px !important;
+}
+
+/* --- Diálogo: Teste de Habilidade --- */
+.exaa-dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 8px 0;
+}
+
+.exaa-dialog-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.exaa-dialog-form .form-group label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.exaa-dialog-form select { width: 100%; }

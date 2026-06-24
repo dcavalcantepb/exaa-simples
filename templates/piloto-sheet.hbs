@@ -40,20 +40,6 @@
   <section class="sheet-body">
     <div class="tab" data-group="primary" data-tab="piloto">
       <section>
-        <h2>Teste de Habilidade</h2>
-        <div class="roll-bar">
-          <label>
-            <span>Atributo</span>
-            <select name="roll-atributo">
-              {{#each atributos as |label key|}}<option value="{{key}}">{{label}}</option>{{/each}}
-            </select>
-          </label>
-          <label><span>Modificador</span><input name="roll-modificador" type="number" value="0" /></label>
-          <label><span>EXApoints</span><input name="roll-exapoints" type="number" value="0" /></label>
-        </div>
-      </section>
-
-      <section>
         <h2>Atributos</h2>
         <div class="grid four-columns">
           {{#each atributos as |label key|}}

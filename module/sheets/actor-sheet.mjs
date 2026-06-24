@@ -75,12 +75,12 @@ export class EXAAActorSheet extends ActorSheet {
     super.activateListeners(html);
     if (!this.isEditable) return;
 
-    html.find("[data-roll-skill]").on("click", event => {
+    html.find("[data-roll-skill]").on("click", async event => {
       const habilidade = event.currentTarget.dataset.rollSkill;
-      const atributo = html.find("[name='roll-atributo']").val();
-      const modificador = html.find("[name='roll-modificador']").val();
-      const exapoints = html.find("[name='roll-exapoints']").val();
-      this.actor.rolarTeste({ atributo, habilidade, modificador, exapoints });
+      const habilidadeLabel = CONFIG.EXAA.habilidades[habilidade] ?? habilidade;
+      const params = await this._abrirDialogoTeste(habilidadeLabel);
+      if (!params) return;
+      this.actor.rolarTeste({ habilidade, ...params });
     });
 
     html.find(".track-checkbox").on("click", async event => {
@@ -91,7 +91,16 @@ export class EXAAActorSheet extends ActorSheet {
       const currentValue = foundry.utils.getProperty(this.actor, field);
       const newValue = currentValue === index + 1 ? index : index + 1;
 
-      await this.actor.update({ [field]: newValue });
+      const updates = { [field]: newValue };
+
+      // Regra vinculada: EXApoints + Síndrome sempre somam 3
+      if (field === "system.exapoints.value") {
+        updates["system.sindrome.value"] = Math.min(3, Math.max(0, 3 - newValue));
+      } else if (field === "system.sindrome.value") {
+        updates["system.exapoints.value"] = Math.min(3, Math.max(0, 3 - newValue));
+      }
+
+      await this.actor.update(updates);
 
       if (field === "system.sindrome.value" && newValue >= this.actor.system.sindrome.max) {
         ChatMessage.create({
@@ -99,6 +108,61 @@ export class EXAAActorSheet extends ActorSheet {
           speaker: ChatMessage.getSpeaker({ actor: this.actor })
         });
       }
+    });
+  }
+
+  async _abrirDialogoTeste(habilidadeLabel) {
+    const atributosOptions = Object.entries(CONFIG.EXAA.atributos)
+      .map(([k, v]) => `<option value="${k}">${v}</option>`)
+      .join("");
+
+    const modOptions = [-3, -2, -1, 0, 1, 2, 3]
+      .map(v => `<option value="${v}"${v === 0 ? " selected" : ""}>${v > 0 ? "+" + v : v}</option>`)
+      .join("");
+
+    const maxEXA = this.actor.system.exapoints?.value ?? 0;
+    const exaOptions = Array.from({ length: maxEXA + 1 }, (_, i) =>
+      `<option value="${i}"${i === 0 ? " selected" : ""}>${i}</option>`
+    ).join("");
+
+    return new Promise(resolve => {
+      new Dialog({
+        title: `Teste: ${habilidadeLabel}`,
+        content: `
+          <form class="exaa-dialog-form">
+            <div class="form-group">
+              <label>Atributo</label>
+              <select name="atributo">${atributosOptions}</select>
+            </div>
+            <div class="form-group">
+              <label>Modificador</label>
+              <select name="modificador">${modOptions}</select>
+            </div>
+            <div class="form-group">
+              <label>EXApoints (disponíveis: ${maxEXA})</label>
+              <select name="exapoints">${exaOptions}</select>
+            </div>
+          </form>
+        `,
+        buttons: {
+          roll: {
+            icon: '<i class="fas fa-dice-d6"></i>',
+            label: "Rolar",
+            callback: html => resolve({
+              atributo: html.find("[name='atributo']").val(),
+              modificador: Number(html.find("[name='modificador']").val()),
+              exapoints: Number(html.find("[name='exapoints']").val())
+            })
+          },
+          cancel: {
+            icon: '<i class="fas fa-times"></i>',
+            label: "Cancelar",
+            callback: () => resolve(null)
+          }
+        },
+        default: "roll",
+        close: () => resolve(null)
+      }).render(true);
     });
   }
 }

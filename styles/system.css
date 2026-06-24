@@ -238,9 +238,9 @@
 }
 
 .exaa-die.exa {
-  border-color: #b8860b;
-  background: #fff8dc;
-  color: #7a5800;
+  border-color: #9370DB;
+  background: #4B0082;
+  color: #DCDCDC;
 }
 
 .exaa-die.winner {
@@ -251,10 +251,10 @@
 }
 
 .exaa-die.exa.winner {
-  border-color: #c8a000;
-  background: #fff3a0;
-  color: #6b4f00;
-  box-shadow: 0 0 4px #c8a00088;
+  border-color: #9370DB;
+  background: #6a0dad;
+  color: #DCDCDC;
+  box-shadow: 0 0 6px #9370DB99;
 }
 
 .exaa-die.miss {

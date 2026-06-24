@@ -162,14 +162,17 @@ export class EXAAActor extends Actor {
   async rolarEXA(quantidade) {
     if (this.type !== "piloto") return;
     const maxEXA = this.system.exapoints?.value ?? 0;
-    const n = Math.min(Math.max(1, quantidade), maxEXA);
+    const n = Math.min(Math.max(0, quantidade), maxEXA);
+    const usaDesvantagem = n <= 0;
 
-    const roll = await new Roll(`${n}d6`).evaluate();
+    const numDados = usaDesvantagem ? 2 : n;
+    const roll = await new Roll(`${numDados}d6`).evaluate();
     const resultados = roll.dice[0].results.map(r => r.result);
-    const melhor = Math.max(...resultados);
-    const resultado = EXAAActor.resultadoTeste(melhor);
+    const valorFinal = usaDesvantagem ? Math.min(...resultados) : Math.max(...resultados);
+    const resultado = EXAAActor.resultadoTeste(valorFinal);
 
-    const uns = resultados.filter(r => r === 1).length;
+    // 1s só penalizam quando há EXApoints em jogo
+    const uns = usaDesvantagem ? 0 : resultados.filter(r => r === 1).length;
     if (uns > 0) {
       const novoEXA = Math.max(0, this.system.exapoints.value - uns);
       await this.update({
@@ -182,19 +185,25 @@ export class EXAAActor extends Actor {
       await game.dice3d.showForRoll(roll, game.user, true, null, false);
     }
 
+    const labelRoll = usaDesvantagem
+      ? `Dados (2d6, mantendo o menor)`
+      : `EXApoints (${n}d6)`;
+
     let winnerFound = false;
     const diceHtml = resultados.map(v => {
-      let cls = "exaa-die exa";
-      if (v === 1) cls += " miss";
-      if (!winnerFound && v === melhor) { cls += " winner"; winnerFound = true; }
+      let cls = usaDesvantagem ? "exaa-die" : "exaa-die exa";
+      if (!usaDesvantagem && v === 1) cls += " miss";
+      if (!winnerFound && v === valorFinal) { cls += " winner"; winnerFound = true; }
       return `<span class="${cls}">${v}</span>`;
     }).join("");
 
+    const tituloRoll = usaDesvantagem ? "Desvantagem (sem EXApoints)" : "EXApoints avulsos";
+
     let content = `
       <div class="exaa-roll-msg">
-        <p><strong>${this.name}</strong> rola <em>EXApoints avulsos</em></p>
+        <p><strong>${this.name}</strong> rola <em>${tituloRoll}</em></p>
         <div class="exaa-dice-group">
-          <span class="exaa-dice-label">EXApoints (${n}d6):</span>
+          <span class="exaa-dice-label">${labelRoll}:</span>
           <span class="exaa-dice-values">${diceHtml}</span>
         </div>
         <p class="exaa-resultado">Resultado: <strong>${resultado}</strong></p>`;

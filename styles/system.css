@@ -165,6 +165,7 @@
 .exaa .tab section { margin-top: 14px; }
 .exaa .tab section:first-child { margin-top: 0; }
 .secao-condicao,
+.secao-modulos,
 .secao-equipamentos { margin-top: 14px; }
 .exaa .tab section + section { margin-top: 14px; }
 

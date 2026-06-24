@@ -155,6 +155,7 @@
     </div>
 
     <div class="tab" data-group="primary" data-tab="exacom">
+
       <section class="grid two-columns">
         <label><span>Nome</span><input name="system.exacom.nome" type="text" value="{{system.exacom.nome}}" /></label>
         <label>
@@ -165,6 +166,10 @@
             {{/each}}
           </select>
         </label>
+      </section>
+
+      <section class="secao-condicao">
+        <h2>Condição</h2>
         <div class="dano-field dano-cor-{{system.dano.exacom.value}}">
           <span class="dano-label-text">EXACOM — {{condicaoEXACOM}}</span>
           <div class="stepper">
@@ -174,12 +179,17 @@
           </div>
         </div>
       </section>
-      <section class="grid two-columns">
-        <label><span>Arma Primária</span><input name="system.exacom.armaPrimaria" type="text" value="{{system.exacom.armaPrimaria}}" /></label>
-        <label><span>Arma Secundária</span><input name="system.exacom.armaSecundaria" type="text" value="{{system.exacom.armaSecundaria}}" /></label>
-        <label><span>Suporte</span><input name="system.exacom.suporte" type="text" value="{{system.exacom.suporte}}" /></label>
-        <label><span>Blindagem</span><input name="system.exacom.blindagem" type="text" value="{{system.exacom.blindagem}}" /></label>
+
+      <section class="secao-modulos">
+        <h2>Módulos</h2>
+        <div class="grid two-columns">
+          <label><span>Arma Primária</span><input name="system.exacom.armaPrimaria" type="text" value="{{system.exacom.armaPrimaria}}" /></label>
+          <label><span>Arma Secundária</span><input name="system.exacom.armaSecundaria" type="text" value="{{system.exacom.armaSecundaria}}" /></label>
+          <label><span>Suporte</span><input name="system.exacom.suporte" type="text" value="{{system.exacom.suporte}}" /></label>
+          <label><span>Blindagem</span><input name="system.exacom.blindagem" type="text" value="{{system.exacom.blindagem}}" /></label>
+        </div>
       </section>
+
     </div>
 
     <div class="tab" data-group="primary" data-tab="background">

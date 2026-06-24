@@ -42,7 +42,7 @@ export class EXAAActor extends Actor {
     const nucleo = this.system.exacom?.nucleo ?? "nenhum";
     if (exalink && nucleo !== "nenhum") {
       const atribNucleo  = CONFIG.EXAA.nucleoAtributo[nucleo];
-      const atribOposto  = CONFIG.EXAA.nucleoOposto[nucleo];
+      const atribOposto  = CONFIG.EXAA.nucleoAtributo[CONFIG.EXAA.nucleoOposto[nucleo]];
       if (atributo === atribNucleo)       { bonusEXACOM = 2; tipoEXACOM = "Núcleo +2"; }
       else if (atributo === atribOposto)  { bonusEXACOM = 0; tipoEXACOM = "Oposto +0"; }
       else                                { bonusEXACOM = 1; tipoEXACOM = "Lateral +1"; }

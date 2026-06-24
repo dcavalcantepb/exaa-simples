@@ -64,10 +64,23 @@ export class PilotoDataModel extends foundry.abstract.TypeDataModel {
       exacom: new SchemaField({
         nome: new StringField({ required: true, blank: true, initial: "" }),
         nucleo: new StringField({ required: true, blank: true, initial: "nenhum" }),
-        armaPrimaria: new StringField({ required: true, blank: true, initial: "" }),
-        armaSecundaria: new StringField({ required: true, blank: true, initial: "" }),
-        suporte: new StringField({ required: true, blank: true, initial: "" }),
-        blindagem: new StringField({ required: true, blank: true, initial: "" })
+        armaPrimaria: new SchemaField({
+          nome:  new StringField({ required: true, blank: true, initial: "" }),
+          tipo:  new StringField({ required: true, blank: true, initial: "" }),
+          porte: new StringField({ required: true, blank: true, initial: "" })
+        }),
+        armaSecundaria: new SchemaField({
+          nome:  new StringField({ required: true, blank: true, initial: "" }),
+          tipo:  new StringField({ required: true, blank: true, initial: "" }),
+          porte: new StringField({ required: true, blank: true, initial: "" })
+        }),
+        suporte: new SchemaField({
+          nome:      new StringField({ required: true, blank: true, initial: "" }),
+          categoria: new StringField({ required: true, blank: true, initial: "" })
+        }),
+        blindagem: new SchemaField({
+          porte: new StringField({ required: true, blank: true, initial: "" })
+        })
       }),
       notas: new HTMLField({ required: true, blank: true })
     };

@@ -182,11 +182,71 @@
 
       <section class="secao-modulos">
         <h2>Módulos</h2>
-        <div class="grid two-columns">
-          <label><span>Arma Primária</span><input name="system.exacom.armaPrimaria" type="text" value="{{system.exacom.armaPrimaria}}" /></label>
-          <label><span>Arma Secundária</span><input name="system.exacom.armaSecundaria" type="text" value="{{system.exacom.armaSecundaria}}" /></label>
-          <label><span>Suporte</span><input name="system.exacom.suporte" type="text" value="{{system.exacom.suporte}}" /></label>
-          <label><span>Blindagem</span><input name="system.exacom.blindagem" type="text" value="{{system.exacom.blindagem}}" /></label>
+        <div class="modulos-grid">
+
+          <div class="modulo-card">
+            <div class="modulo-header">Arma Primária</div>
+            <div class="modulo-body">
+              <label><span>Nome</span><input name="system.exacom.armaPrimaria.nome" type="text" value="{{system.exacom.armaPrimaria.nome}}" /></label>
+              <label>
+                <span>Tipo</span>
+                <select name="system.exacom.armaPrimaria.tipo">
+                  {{#each armaPrimariaTipoOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+                </select>
+              </label>
+              <label>
+                <span>Porte</span>
+                <select name="system.exacom.armaPrimaria.porte">
+                  {{#each armaPrimariaPorteOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="modulo-card">
+            <div class="modulo-header">Arma Secundária</div>
+            <div class="modulo-body">
+              <label><span>Nome</span><input name="system.exacom.armaSecundaria.nome" type="text" value="{{system.exacom.armaSecundaria.nome}}" /></label>
+              <label>
+                <span>Tipo</span>
+                <select name="system.exacom.armaSecundaria.tipo">
+                  {{#each armaSecundariaTipoOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+                </select>
+              </label>
+              <label>
+                <span>Porte</span>
+                <select name="system.exacom.armaSecundaria.porte">
+                  {{#each armaSecundariaPorteOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="modulo-card">
+            <div class="modulo-header">Suporte</div>
+            <div class="modulo-body">
+              <label><span>Nome</span><input name="system.exacom.suporte.nome" type="text" value="{{system.exacom.suporte.nome}}" /></label>
+              <label>
+                <span>Categoria</span>
+                <select name="system.exacom.suporte.categoria">
+                  {{#each suporteCategoriaOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="modulo-card">
+            <div class="modulo-header">Blindagem</div>
+            <div class="modulo-body">
+              <label>
+                <span>Porte</span>
+                <select name="system.exacom.blindagem.porte">
+                  {{#each blindagemPorteOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+                </select>
+              </label>
+            </div>
+          </div>
+
         </div>
       </section>
 

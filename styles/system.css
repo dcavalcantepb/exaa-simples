@@ -167,6 +167,38 @@
 .secao-condicao,
 .secao-modulos,
 .secao-equipamentos { margin-top: 14px; }
+
+/* --- Cards de Módulos EXACOM --- */
+.modulos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.modulo-card {
+  border: 1px solid #6C32A6;
+  border-radius: 5px;
+  overflow: hidden;
+  background: #1D1340;
+}
+
+.modulo-header {
+  padding: 6px 10px;
+  background: #381659;
+  border-bottom: 1px solid #6C32A6;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #E8DEFF;
+}
+
+.modulo-body {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
 .exaa .tab section + section { margin-top: 14px; }
 
 .exaa .item-type {

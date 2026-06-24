@@ -6,10 +6,13 @@
       <div class="grid three-columns">
         <div class="track-field">
           <span>EXApoints</span>
-          <div class="checkbox-track">
-            {{#each exapointsBoxes}}
-              <input type="checkbox" class="track-checkbox" data-field="system.exapoints.value" data-index="{{@index}}" {{#if this}}checked{{/if}} />
-            {{/each}}
+          <div class="exapoints-row">
+            <div class="checkbox-track">
+              {{#each exapointsBoxes}}
+                <input type="checkbox" class="track-checkbox" data-field="system.exapoints.value" data-index="{{@index}}" {{#if this}}checked{{/if}} />
+              {{/each}}
+            </div>
+            <button type="button" class="roll-btn exa-solo-btn" data-roll-exa title="Rolar EXApoints">⚄</button>
           </div>
         </div>
         <div class="track-field">

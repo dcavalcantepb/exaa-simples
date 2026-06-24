@@ -232,6 +232,18 @@
   height: 28px;
 }
 
+.exapoints-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+}
+
+.exa-solo-btn {
+  flex-shrink: 0;
+  font-size: 0.85rem;
+}
+
 .exaa .checkbox-track input[type="checkbox"] {
   width: 18px;
   height: 18px;

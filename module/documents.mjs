@@ -159,6 +159,59 @@ export class EXAAActor extends Actor {
     });
   }
 
+  async rolarEXA(quantidade) {
+    if (this.type !== "piloto") return;
+    const maxEXA = this.system.exapoints?.value ?? 0;
+    const n = Math.min(Math.max(1, quantidade), maxEXA);
+
+    const roll = await new Roll(`${n}d6`).evaluate();
+    const resultados = roll.dice[0].results.map(r => r.result);
+    const melhor = Math.max(...resultados);
+    const resultado = EXAAActor.resultadoTeste(melhor);
+
+    const uns = resultados.filter(r => r === 1).length;
+    if (uns > 0) {
+      const novoEXA = Math.max(0, this.system.exapoints.value - uns);
+      await this.update({
+        "system.exapoints.value": novoEXA,
+        "system.sindrome.value": Math.min(3, 3 - novoEXA)
+      });
+    }
+
+    if (game.dice3d) {
+      await game.dice3d.showForRoll(roll, game.user, true, null, false);
+    }
+
+    let winnerFound = false;
+    const diceHtml = resultados.map(v => {
+      let cls = "exaa-die exa";
+      if (v === 1) cls += " miss";
+      if (!winnerFound && v === melhor) { cls += " winner"; winnerFound = true; }
+      return `<span class="${cls}">${v}</span>`;
+    }).join("");
+
+    let content = `
+      <div class="exaa-roll-msg">
+        <p><strong>${this.name}</strong> rola <em>EXApoints avulsos</em></p>
+        <div class="exaa-dice-group">
+          <span class="exaa-dice-label">EXApoints (${n}d6):</span>
+          <span class="exaa-dice-values">${diceHtml}</span>
+        </div>
+        <p class="exaa-resultado">Resultado: <strong>${resultado}</strong></p>`;
+
+    if (uns > 0) {
+      content += `
+        <p class="exaa-consequence">⚠ ${uns} dado(s) com resultado 1: ${uns} EXApoint(s) perdido(s) e ${uns} Marca(s) adicionada(s).</p>`;
+    }
+
+    content += `\n      </div>`;
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      content
+    });
+  }
+
   static resultadoTeste(valor) {
     if (valor <= 1) return "Falha Crítica";
     if (valor <= 3) return "Falha";

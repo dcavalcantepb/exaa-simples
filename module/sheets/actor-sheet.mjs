@@ -162,6 +162,17 @@ export class EXAAActorSheet extends ActorSheet {
     super.activateListeners(html);
     if (!this.isEditable) return;
 
+    html.find("[data-roll-exa]").on("click", async () => {
+      const maxEXA = this.actor.system.exapoints?.value ?? 0;
+      if (maxEXA === 0) {
+        ui.notifications.warn("Nenhum EXApoint disponível.");
+        return;
+      }
+      const params = await this._abrirDialogoEXA(maxEXA);
+      if (!params) return;
+      this.actor.rolarEXA(params.quantidade);
+    });
+
     html.find("[data-roll-skill]").on("click", async event => {
       const habilidade = event.currentTarget.dataset.rollSkill;
       const habilidadeLabel = CONFIG.EXAA.habilidades[habilidade] ?? habilidade;
@@ -251,6 +262,40 @@ export class EXAAActorSheet extends ActorSheet {
               modificador: Number(html.find("[name='modificador']").val()),
               exapoints: Number(html.find("[name='exapoints']").val())
             })
+          },
+          cancel: {
+            icon: '<i class="fas fa-times"></i>',
+            label: "Cancelar",
+            callback: () => resolve(null)
+          }
+        },
+        default: "roll",
+        close: () => resolve(null)
+      }).render(true);
+    });
+  }
+
+  async _abrirDialogoEXA(maxEXA) {
+    const options = Array.from({ length: maxEXA }, (_, i) => i + 1)
+      .map(n => `<option value="${n}"${n === maxEXA ? " selected" : ""}>${n}</option>`)
+      .join("");
+
+    return new Promise(resolve => {
+      new Dialog({
+        title: "Rolar EXApoints",
+        content: `
+          <form class="exaa-dialog-form">
+            <div class="form-group">
+              <label>Quantidade (máx. ${maxEXA} disponível${maxEXA > 1 ? "is" : ""})</label>
+              <select name="quantidade">${options}</select>
+            </div>
+          </form>
+        `,
+        buttons: {
+          roll: {
+            icon: '<i class="fas fa-dice-d6"></i>',
+            label: "Rolar",
+            callback: html => resolve({ quantidade: Number(html.find("[name='quantidade']").val()) })
           },
           cancel: {
             icon: '<i class="fas fa-times"></i>',

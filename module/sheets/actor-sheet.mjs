@@ -38,6 +38,9 @@ export class EXAAActorSheet extends ActorSheet {
     const context = await super.getData(options);
     const sys = this.actor.system;
     context.system = sys;
+
+    if (this.actor.type !== "piloto") return context;
+
     context.atributos = CONFIG.EXAA.atributos;
     context.habilidades = CONFIG.EXAA.habilidades;
     context.nucleos = CONFIG.EXAA.nucleos;

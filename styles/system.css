@@ -251,7 +251,7 @@
 
 .skill-row-grupo {
   display: grid;
-  grid-template-columns: 26px 1fr 44px;
+  grid-template-columns: 26px 1fr max-content;
   gap: 6px;
   align-items: center;
 }

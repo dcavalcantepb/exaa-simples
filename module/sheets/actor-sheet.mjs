@@ -165,8 +165,7 @@ export class EXAAActorSheet extends ActorSheet {
     html.find("[data-roll-exa]").on("click", async () => {
       const maxEXA = this.actor.system.exapoints?.value ?? 0;
       if (maxEXA === 0) {
-        // Sem EXApoints: rola com desvantagem (2d6, pior resultado)
-        this.actor.rolarEXA(0);
+        ui.notifications.warn("Piloto sem EXApoints não pode rolar dados.");
         return;
       }
       const params = await this._abrirDialogoEXA(maxEXA);

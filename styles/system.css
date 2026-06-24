@@ -821,8 +821,12 @@
 
 .exaa-sobrecarga-btn.exaa-sobrecarga-usada,
 .exaa-sobrecarga-btn:disabled {
-  background: #1A0F28;
+  background: #150B20;
   border-color: #4A3060;
-  color: #7A6490;
+  color: #9B82BC;
   cursor: not-allowed;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.8rem;
+  font-style: italic;
 }

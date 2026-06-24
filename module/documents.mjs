@@ -56,9 +56,10 @@ export class EXAAActor extends Actor {
     const rollBase = await new Roll(`${numBase}d6`).evaluate();
     const resultadosBase = rollBase.dice[0].results.map(r => r.result);
 
+    let rollEXA = null;
     let resultadosEXA = [];
     if (dadosEXA > 0) {
-      const rollEXA = await new Roll(`${dadosEXA}d6`).evaluate();
+      rollEXA = await new Roll(`${dadosEXA}d6`).evaluate();
       resultadosEXA = rollEXA.dice[0].results.map(r => r.result);
     }
 
@@ -135,34 +136,17 @@ export class EXAAActor extends Actor {
     if (exalink && nucleo !== "nenhum") {
       const temSeis = [...resultadosBase, ...resultadosEXA].some(v => v === 6);
       if (temSeis) {
-        content += `
-        <div class="exaa-sobrecarga-wrapper">
-          <button class="exaa-sobrecarga-btn exaa-sobrecarga-usada" disabled>
-            Sobrecarga indisponível (dado 6 obtido)
-          </button>
-        </div>`;
+        content += `<div class="exaa-sobrecarga-wrapper"><button class="exaa-sobrecarga-btn exaa-sobrecarga-usada" disabled>Sobrecarga indisponível — você já obteve um 6</button></div>`;
       } else {
-        content += `
-        <div class="exaa-sobrecarga-wrapper">
-          <button class="exaa-sobrecarga-btn"
-                  data-actor-id="${this.id}"
-                  data-resultados-base='${JSON.stringify(resultadosBase)}'
-                  data-resultados-exa='${JSON.stringify(resultadosEXA)}'
-                  data-resultado-final="${resultadoFinal}">
-            Sobrecarga
-          </button>
-        </div>`;
+        content += `<div class="exaa-sobrecarga-wrapper"><button class="exaa-sobrecarga-btn" data-actor-id="${this.id}" data-resultados-base='${JSON.stringify(resultadosBase)}' data-resultados-exa='${JSON.stringify(resultadosEXA)}' data-resultado-final="${resultadoFinal}">Sobrecarga</button></div>`;
       }
     }
 
     content += `\n      </div>`;
 
-    const allRolls = dadosEXA > 0 ? [rollBase, rollEXA] : [rollBase];
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),
-      content,
-      rolls: allRolls,
-      sound: CONFIG.sounds.dice
+      content
     });
   }
 

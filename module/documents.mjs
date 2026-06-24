@@ -136,13 +136,22 @@ export class EXAAActor extends Actor {
     if (exalink && nucleo !== "nenhum") {
       const temSeis = [...resultadosBase, ...resultadosEXA].some(v => v === 6);
       if (temSeis) {
-        content += `<div class="exaa-sobrecarga-wrapper"><button class="exaa-sobrecarga-btn exaa-sobrecarga-usada" disabled>Sobrecarga indisponível — você já obteve um 6</button></div>`;
+        content += `<div class="exaa-sobrecarga-wrapper"><button class="exaa-sobrecarga-btn exaa-sobrecarga-usada" disabled>Sobrecarga Indisponível</button></div>`;
       } else {
         content += `<div class="exaa-sobrecarga-wrapper"><button class="exaa-sobrecarga-btn" data-actor-id="${this.id}" data-resultados-base='${JSON.stringify(resultadosBase)}' data-resultados-exa='${JSON.stringify(resultadosEXA)}' data-resultado-final="${resultadoFinal}">Sobrecarga</button></div>`;
       }
     }
 
     content += `\n      </div>`;
+
+    // Anima dados pelo DSN sem passar rolls ao ChatMessage
+    // (passar rolls ao ChatMessage faz o Foundry v13 renderizar os dados brutos junto ao nosso HTML)
+    if (game.dice3d) {
+      const rollsToShow = [rollBase, rollEXA].filter(Boolean);
+      for (const roll of rollsToShow) {
+        await game.dice3d.showForRoll(roll, game.user, true, null, false);
+      }
+    }
 
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),

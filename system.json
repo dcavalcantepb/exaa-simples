@@ -2,7 +2,7 @@
   "id": "exaa-simples",
   "title": "EXAA Simples",
   "description": "Sistema simples para jogar EX:AA - Alvorada de Aco no Foundry VTT.",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "compatibility": {
     "minimum": 13,
     "verified": 13
@@ -44,5 +44,5 @@
   "primaryTokenAttribute": "dano.piloto",
   "url": "https://github.com/dcavalcantepb/exaa-simples",
   "manifest": "https://raw.githubusercontent.com/dcavalcantepb/exaa-simples/main/system.json",
-  "download": "https://github.com/dcavalcantepb/exaa-simples/releases/download/v0.1.16/exaa-simples-v0.1.16.zip"
+  "download": "https://github.com/dcavalcantepb/exaa-simples/releases/download/v0.1.17/exaa-simples-v0.1.17.zip"
 }

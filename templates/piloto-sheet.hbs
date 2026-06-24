@@ -39,34 +39,28 @@
 
   <section class="sheet-body">
     <div class="tab" data-group="primary" data-tab="piloto">
-      <section>
-        <h2>Atributos</h2>
-        <div class="grid four-columns">
-          {{#each atributos as |label key|}}
-            <label>
-              <span>{{label}}</span>
-              <input name="system.atributos.{{key}}.value" type="number" value="{{lookup (lookup ../system.atributos key) "value"}}" />
-            </label>
-          {{/each}}
-        </div>
-      </section>
 
-      <section>
-        <h2>Habilidades</h2>
-        <div class="skills-grid">
-          {{#each habilidades as |label key|}}
-            <div class="skill-row">
-              <button type="button" data-roll-skill="{{key}}">Rolar</button>
-              <label>
-                <span>{{label}}</span>
-                <input name="system.habilidades.{{key}}.value" type="number" value="{{lookup (lookup ../system.habilidades key) "value"}}" />
-              </label>
+      <div class="atributos-habilidades-grid">
+        {{#each gruposHabilidades}}
+        <div class="atributo-grupo">
+          <div class="atributo-header">
+            <span class="atributo-label">{{atributoLabel}}</span>
+            <input name="system.atributos.{{atributoKey}}.value" type="number" value="{{atributoValue}}" class="atributo-valor-input" />
+          </div>
+          <div class="habilidades-lista">
+            {{#each habilidades}}
+            <div class="skill-row-grupo">
+              <button type="button" class="roll-btn" data-roll-skill="{{key}}">⚄</button>
+              <span class="skill-nome">{{label}}</span>
+              <input name="system.habilidades.{{key}}.value" type="number" value="{{value}}" class="skill-valor-input" />
             </div>
-          {{/each}}
+            {{/each}}
+          </div>
         </div>
-      </section>
+        {{/each}}
+      </div>
 
-      <section>
+      <section class="secao-condicao">
         <h2>Condição</h2>
         <div class="grid two-columns">
           <label><span>Dano do Piloto: {{condicaoPiloto}}</span><input name="system.dano.piloto.value" type="number" value="{{system.dano.piloto.value}}" /></label>
@@ -74,7 +68,7 @@
         </div>
       </section>
 
-      <section>
+      <section class="secao-equipamentos">
         <h2>Equipamentos</h2>
         <label class="carga-label">
           <span>Carga</span>

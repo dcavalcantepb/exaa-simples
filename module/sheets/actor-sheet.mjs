@@ -26,6 +26,16 @@ export class EXAAActorSheet extends ActorSheet {
     context.atributos = CONFIG.EXAA.atributos;
     context.habilidades = CONFIG.EXAA.habilidades;
     context.nucleos = CONFIG.EXAA.nucleos;
+    context.gruposHabilidades = CONFIG.EXAA.grupos.map(g => ({
+      atributoKey: g.key,
+      atributoLabel: g.label,
+      atributoValue: this.actor.system.atributos[g.key]?.value ?? 0,
+      habilidades: g.habilidades.map(hk => ({
+        key: hk,
+        label: CONFIG.EXAA.habilidades[hk],
+        value: this.actor.system.habilidades[hk]?.value ?? 0
+      }))
+    }));
     context.condicaoPiloto = this.actor.condicaoPiloto;
     context.condicaoEXACOM = this.actor.condicaoEXACOM;
     context.exapointsBoxes = Array.from({ length: 3 }, (_, i) => i < this.actor.system.exapoints.value);
@@ -78,9 +88,10 @@ export class EXAAActorSheet extends ActorSheet {
     html.find("[data-roll-skill]").on("click", async event => {
       const habilidade = event.currentTarget.dataset.rollSkill;
       const habilidadeLabel = CONFIG.EXAA.habilidades[habilidade] ?? habilidade;
+      const atributo = CONFIG.EXAA.habilidadeAtributo[habilidade];
       const params = await this._abrirDialogoTeste(habilidadeLabel);
       if (!params) return;
-      this.actor.rolarTeste({ habilidade, ...params });
+      this.actor.rolarTeste({ habilidade, atributo, ...params });
     });
 
     html.find(".track-checkbox").on("click", async event => {
@@ -112,10 +123,6 @@ export class EXAAActorSheet extends ActorSheet {
   }
 
   async _abrirDialogoTeste(habilidadeLabel) {
-    const atributosOptions = Object.entries(CONFIG.EXAA.atributos)
-      .map(([k, v]) => `<option value="${k}">${v}</option>`)
-      .join("");
-
     const modOptions = [-3, -2, -1, 0, 1, 2, 3]
       .map(v => `<option value="${v}"${v === 0 ? " selected" : ""}>${v > 0 ? "+" + v : v}</option>`)
       .join("");
@@ -131,10 +138,6 @@ export class EXAAActorSheet extends ActorSheet {
         content: `
           <form class="exaa-dialog-form">
             <div class="form-group">
-              <label>Atributo</label>
-              <select name="atributo">${atributosOptions}</select>
-            </div>
-            <div class="form-group">
               <label>Modificador</label>
               <select name="modificador">${modOptions}</select>
             </div>
@@ -149,7 +152,6 @@ export class EXAAActorSheet extends ActorSheet {
             icon: '<i class="fas fa-dice-d6"></i>',
             label: "Rolar",
             callback: html => resolve({
-              atributo: html.find("[name='atributo']").val(),
               modificador: Number(html.find("[name='modificador']").val()),
               exapoints: Number(html.find("[name='exapoints']").val())
             })

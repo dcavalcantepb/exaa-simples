@@ -80,28 +80,93 @@
   font-weight: 700;
 }
 
-.exaa .roll-bar {
+/* --- Grupos de Atributos + Habilidades --- */
+.atributos-habilidades-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  gap: 8px;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 }
 
-.exaa .skills-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
+.atributo-grupo {
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 5px;
+  overflow: hidden;
 }
 
-.exaa .skill-row {
-  display: grid;
-  grid-template-columns: 74px 1fr;
+.atributo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 8px;
-  align-items: end;
+  padding: 5px 10px;
+  background: rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.atributo-label {
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  flex: 1;
+}
+
+.atributo-valor-input {
+  width: 44px !important;
+  text-align: center !important;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.habilidades-lista {
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.skill-row-grupo {
+  display: grid;
+  grid-template-columns: 26px 1fr 44px;
+  gap: 6px;
+  align-items: center;
+}
+
+.roll-btn {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  border-radius: 3px;
+  cursor: pointer;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.skill-nome {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.skill-valor-input {
+  width: 44px !important;
+  text-align: center !important;
+  font-weight: 700;
 }
 
 .exaa .editor {
   min-height: 220px;
 }
+
+.exaa .tab section { margin-top: 14px; }
+.exaa .tab section:first-child { margin-top: 0; }
+.secao-condicao,
+.secao-equipamentos { margin-top: 14px; }
+
+.exaa .tab section + section { margin-top: 14px; }
 
 .exaa .item-type {
   margin: 0;

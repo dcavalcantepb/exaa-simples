@@ -35,7 +35,19 @@ Hooks.once("init", () => {
       reconhecimento: "Reconhecimento",
       engenharia: "Engenharia",
       comando: "Comando"
-    }
+    },
+    habilidadeAtributo: {
+      atletismo: "fisico", combate: "fisico", sobrevivencia: "fisico",
+      pontaria: "agilidade", furtividade: "agilidade", pilotagem: "agilidade",
+      percepcao: "intelecto", tecnica: "intelecto", medicina: "intelecto",
+      comando: "vontade", influencia: "vontade", disciplina: "vontade"
+    },
+    grupos: [
+      { key: "fisico",    label: "Físico",    habilidades: ["atletismo", "combate", "sobrevivencia"] },
+      { key: "agilidade", label: "Agilidade", habilidades: ["pontaria", "furtividade", "pilotagem"] },
+      { key: "intelecto", label: "Intelecto", habilidades: ["percepcao", "tecnica", "medicina"] },
+      { key: "vontade",   label: "Vontade",   habilidades: ["comando", "influencia", "disciplina"] }
+    ]
   };
 
   CONFIG.Actor.documentClass = EXAAActor;

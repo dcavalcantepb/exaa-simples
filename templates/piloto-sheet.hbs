@@ -117,7 +117,14 @@
     <div class="tab" data-group="primary" data-tab="exacom">
       <section class="grid two-columns">
         <label><span>Nome</span><input name="system.exacom.nome" type="text" value="{{system.exacom.nome}}" /></label>
-        <label><span>Núcleo</span><input name="system.exacom.nucleo" type="text" value="{{system.exacom.nucleo}}" /></label>
+        <label>
+          <span>Núcleo</span>
+          <select name="system.exacom.nucleo">
+            {{#each nucleoOptions}}
+              <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </label>
         <label><span>Dano do EXACOM: {{condicaoEXACOM}}</span><input name="system.dano.exacom.value" type="number" value="{{system.dano.exacom.value}}" /></label>
       </section>
       <section class="grid two-columns">

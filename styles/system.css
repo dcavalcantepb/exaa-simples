@@ -368,3 +368,69 @@
 }
 
 .exaa-dialog-form select { width: 100%; }
+
+.exaa-dialog-divider {
+  margin: 4px 0;
+  border: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.exaa-dialog-section-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+  opacity: 0.6;
+}
+
+.exalink-label {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  cursor: pointer;
+}
+
+.exalink-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+/* --- Botão Sobrecarga (chat) --- */
+.exaa-sobrecarga-wrapper { margin-top: 8px; }
+
+.exaa-sobrecarga-btn {
+  display: block;
+  width: 100%;
+  padding: 6px 12px;
+  background: #b00020;
+  color: #fff;
+  border: 2px solid #7a0016;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.exaa-sobrecarga-btn:hover:not(:disabled) {
+  background: #d4002a;
+  border-color: #b00020;
+}
+
+.exaa-sobrecarga-btn.exaa-sobrecarga-usada,
+.exaa-sobrecarga-btn:disabled {
+  background: #555;
+  border-color: #333;
+  color: #aaa;
+  cursor: not-allowed;
+}

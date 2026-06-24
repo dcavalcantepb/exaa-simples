@@ -28,13 +28,26 @@ export class EXAAActor extends Actor {
     return condicoes[Math.clamp(Number(dano) || 0, 0, 3)];
   }
 
-  async rolarTeste({ atributo, habilidade, modificador = 0, exapoints = 0 } = {}) {
+  async rolarTeste({ atributo, habilidade, modificador = 0, exapoints = 0, exalink = false } = {}) {
     if (this.type !== "piloto") return;
 
     const valorAtributo = this.system.atributos?.[atributo]?.value ?? 0;
     const valorHabilidade = this.system.habilidades?.[habilidade]?.value ?? 0;
     const penalidade = this.system.sindrome?.value ?? 0;
-    const dadosBase = valorAtributo + valorHabilidade + Number(modificador) - penalidade;
+
+    // Bônus do Núcleo EXACOM
+    let bonusEXACOM = 0;
+    let tipoEXACOM = "";
+    const nucleo = this.system.exacom?.nucleo ?? "nenhum";
+    if (exalink && nucleo !== "nenhum") {
+      const atribNucleo  = CONFIG.EXAA.nucleoAtributo[nucleo];
+      const atribOposto  = CONFIG.EXAA.nucleoOposto[nucleo];
+      if (atributo === atribNucleo)       { bonusEXACOM = 2; tipoEXACOM = "Núcleo +2"; }
+      else if (atributo === atribOposto)  { bonusEXACOM = 0; tipoEXACOM = "Oposto +0"; }
+      else                                { bonusEXACOM = 1; tipoEXACOM = "Lateral +1"; }
+    }
+
+    const dadosBase = valorAtributo + valorHabilidade + Number(modificador) - penalidade + bonusEXACOM;
     const dadosEXA = Math.max(0, Number(exapoints) || 0);
     const usaPior = dadosBase <= 0 && dadosEXA === 0;
 
@@ -90,6 +103,7 @@ export class EXAAActor extends Actor {
     if (Number(modificador) !== 0) partes.push(`Mod (${Number(modificador) > 0 ? "+" : ""}${modificador})`);
     let detalheParada = partes.join(" + ");
     if (penalidade > 0) detalheParada += ` − Marcas (${penalidade})`;
+    if (exalink && nucleo !== "nenhum") detalheParada += ` + EXACOM (${tipoEXACOM})`;
     detalheParada += ` = ${usaPior ? "2d6 (pior)" : `${numBase}d6`}`;
 
     let content = `
@@ -115,6 +129,19 @@ export class EXAAActor extends Actor {
     if (exaUms > 0) {
       content += `
         <p class="exaa-consequence">⚠ ${exaUms} dado(s) EXA com resultado 1: ${exaUms} EXApoint(s) perdido(s) e ${exaUms} Marca(s) adicionada(s).</p>`;
+    }
+
+    if (exalink && nucleo !== "nenhum") {
+      content += `
+        <div class="exaa-sobrecarga-wrapper">
+          <button class="exaa-sobrecarga-btn"
+                  data-actor-id="${this.id}"
+                  data-resultados-base='${JSON.stringify(resultadosBase)}'
+                  data-resultados-exa='${JSON.stringify(resultadosEXA)}'
+                  data-resultado-final="${resultadoFinal}">
+            Sobrecarga
+          </button>
+        </div>`;
     }
 
     content += `\n      </div>`;

@@ -78,6 +78,10 @@ export class EXAAActorSheet extends ActorSheet {
     context.porteTotal    = equips.reduce((sum, e) => sum + (e?.porte ?? 0), 0);
     context.cargaMax      = CARGA_MAX[this.actor.system.carga] ?? 5;
     context.cargaExcedida = context.porteTotal > context.cargaMax;
+    const nucleoAtual = this.actor.system.exacom?.nucleo ?? "nenhum";
+    context.nucleoOptions = Object.entries(CONFIG.EXAA.nucleos).map(([k, v]) => ({
+      value: k, label: v, selected: k === nucleoAtual
+    }));
     return context;
   }
 
@@ -132,6 +136,10 @@ export class EXAAActorSheet extends ActorSheet {
       `<option value="${i}"${i === 0 ? " selected" : ""}>${i}</option>`
     ).join("");
 
+    const nucleo = this.actor.system.exacom?.nucleo ?? "nenhum";
+    const nucleoLabel = CONFIG.EXAA.nucleos[nucleo] ?? "Nenhum";
+    const temNucleo = nucleo !== "nenhum";
+
     return new Promise(resolve => {
       new Dialog({
         title: `Teste: ${habilidadeLabel}`,
@@ -145,6 +153,14 @@ export class EXAAActorSheet extends ActorSheet {
               <label>EXApoints (disponíveis: ${maxEXA})</label>
               <select name="exapoints">${exaOptions}</select>
             </div>
+            <hr class="exaa-dialog-divider" />
+            <p class="exaa-dialog-section-title">EXACOM</p>
+            <div class="form-group">
+              <label class="exalink-label">
+                <input type="checkbox" name="exalink" ${!temNucleo ? "disabled" : ""} />
+                EXAlink${temNucleo ? ` — Núcleo: ${nucleoLabel}` : " (sem núcleo definido)"}
+              </label>
+            </div>
           </form>
         `,
         buttons: {
@@ -153,7 +169,8 @@ export class EXAAActorSheet extends ActorSheet {
             label: "Rolar",
             callback: html => resolve({
               modificador: Number(html.find("[name='modificador']").val()),
-              exapoints: Number(html.find("[name='exapoints']").val())
+              exapoints: Number(html.find("[name='exapoints']").val()),
+              exalink: html.find("[name='exalink']").is(":checked")
             })
           },
           cancel: {

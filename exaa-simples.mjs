@@ -31,10 +31,23 @@ Hooks.once("init", () => {
       disciplina: "Disciplina"
     },
     nucleos: {
+      nenhum: "Nenhum",
       assalto: "Assalto",
       reconhecimento: "Reconhecimento",
       engenharia: "Engenharia",
-      comando: "Comando"
+      lideranca: "Liderança"
+    },
+    nucleoAtributo: {
+      assalto: "fisico",
+      reconhecimento: "agilidade",
+      engenharia: "intelecto",
+      lideranca: "vontade"
+    },
+    nucleoOposto: {
+      assalto: "engenharia",
+      engenharia: "assalto",
+      reconhecimento: "lideranca",
+      lideranca: "reconhecimento"
     },
     habilidadeAtributo: {
       atletismo: "fisico", combate: "fisico", sobrevivencia: "fisico",
@@ -84,5 +97,60 @@ Hooks.once("init", () => {
   Items.registerSheet("exaa-simples", EXAAItemSheet, {
     makeDefault: true,
     types: ["equipamento", "modulo"]
+  });
+});
+
+Hooks.on("renderChatMessage", (message, html) => {
+  html.find(".exaa-sobrecarga-btn:not([disabled])").on("click", async event => {
+    event.preventDefault();
+    const btn = event.currentTarget;
+    btn.disabled = true;
+
+    const actorId = btn.dataset.actorId;
+    const actor = game.actors.get(actorId);
+    if (!actor?.isOwner) return;
+
+    const resultadosBase = JSON.parse(btn.dataset.resultadosBase || "[]");
+    const resultadosExa  = JSON.parse(btn.dataset.resultadosExa  || "[]");
+    const todosDados = [...resultadosBase, ...resultadosExa];
+    const minVal = Math.min(...todosDados);
+
+    const novosBase = [...resultadosBase];
+    const novosExa  = [...resultadosExa];
+    const baseIdx = novosBase.indexOf(minVal);
+    if (baseIdx !== -1) novosBase[baseIdx] = 6;
+    else { const ei = novosExa.indexOf(minVal); if (ei !== -1) novosExa[ei] = 6; }
+
+    const todosNovos = [...novosBase, ...novosExa];
+    const novoFinal = Math.max(...todosNovos);
+    const v = novoFinal;
+    const resultadoTexto = v <= 1 ? "Falha Crítica" : v <= 3 ? "Falha" : v <= 5 ? "Sucesso com Custo" : "Sucesso Crítico";
+
+    const novoEXA = Math.max(0, actor.system.exapoints.value - 1);
+    await actor.update({
+      "system.exapoints.value": novoEXA,
+      "system.sindrome.value": Math.min(3, 3 - novoEXA)
+    });
+
+    const messageId = btn.closest("[data-message-id]")?.dataset.messageId;
+    if (messageId) {
+      const msg = game.messages.get(messageId);
+      if (msg) {
+        const novoConteudo = msg.content.replace(
+          /<div class="exaa-sobrecarga-wrapper">[\s\S]*?<\/div>/,
+          '<div class="exaa-sobrecarga-wrapper"><button class="exaa-sobrecarga-btn exaa-sobrecarga-usada" disabled>✓ Sobrecarga ativada</button></div>'
+        );
+        await msg.update({ content: novoConteudo });
+      }
+    }
+
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor }),
+      content: `<div class="exaa-roll-msg">
+        <p>⚡ <strong>Sobrecarga EXACOM!</strong> Dado ${minVal} convertido em 6.</p>
+        <p class="exaa-resultado">Novo resultado: <strong>${resultadoTexto}</strong></p>
+        <p class="exaa-consequence">1 EXApoint consumido e 1 Marca adicionada.</p>
+      </div>`
+    });
   });
 });

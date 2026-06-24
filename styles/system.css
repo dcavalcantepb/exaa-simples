@@ -209,6 +209,12 @@
 /* --- Chat: Teste de Habilidade --- */
 .exaa-roll-msg p { margin: 4px 0; }
 
+.exaa-detalhe {
+  font-size: 0.8rem;
+  opacity: 0.75;
+  font-style: italic;
+}
+
 .exaa-dice-group {
   display: flex;
   align-items: center;

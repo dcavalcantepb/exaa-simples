@@ -83,9 +83,19 @@ export class EXAAActor extends Actor {
       ? `Dados (${numBase}d6, mantendo o menor)`
       : `Dados Base (${numBase}d6)`;
 
+    const partes = [
+      `${labelAtributo} (${valorAtributo})`,
+      `${labelHabilidade} (${valorHabilidade})`
+    ];
+    if (Number(modificador) !== 0) partes.push(`Mod (${Number(modificador) > 0 ? "+" : ""}${modificador})`);
+    let detalheParada = partes.join(" + ");
+    if (penalidade > 0) detalheParada += ` − Marcas (${penalidade})`;
+    detalheParada += ` = ${usaPior ? "2d6 (pior)" : `${numBase}d6`}`;
+
     let content = `
       <div class="exaa-roll-msg">
         <p><strong>${this.name}</strong> testa <em>${labelAtributo} + ${labelHabilidade}</em></p>
+        <p class="exaa-detalhe">${detalheParada}</p>
         <div class="exaa-dice-group">
           <span class="exaa-dice-label">${labelBase}:</span>
           <span class="exaa-dice-values">${baseHtml}</span>

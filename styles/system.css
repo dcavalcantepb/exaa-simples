@@ -1,20 +1,37 @@
+/* ============================================================
+   EXAA Simples — Synthwave Theme
+   #0D1026 · #1D1340 · #381659 · #6C32A6 · #7D29F2
+   Texto principal : #E8DEFF  |  Secundário : #C4AEED
+   Muted           : #9B82BC  |  Neon accent : via dano/chat
+   ============================================================ */
+
+/* --- Layout base --- */
 .exaa.sheet form {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  background: #1D1340;
+  color: #E8DEFF;
+  padding: 10px;
+  border-radius: 4px;
 }
 
 .exaa .sheet-header {
   display: flex;
   gap: 12px;
   align-items: flex-start;
+  background: #0D1026;
+  border: 1px solid #6C32A6;
+  border-radius: 5px;
+  padding: 10px;
 }
 
 .exaa .profile-img {
   width: 104px;
   height: 104px;
   object-fit: cover;
-  border: 1px solid #777;
+  border: 2px solid #6C32A6;
+  border-radius: 4px;
 }
 
 .exaa .header-fields {
@@ -27,39 +44,58 @@
 .exaa input[name="name"] {
   font-size: 1.35rem;
   font-weight: 700;
+  background: transparent;
+  color: #E8DEFF;
+  border: none;
+  border-bottom: 2px solid #6C32A6;
+  padding: 2px 4px;
+  width: 100%;
 }
 
-.exaa .grid {
-  display: grid;
-  gap: 8px;
+.exaa input[name="name"]:focus {
+  outline: none;
+  border-bottom-color: #7D29F2;
 }
 
-.exaa .one-column {
-  grid-template-columns: 1fr;
-}
+/* --- Grid utilitário --- */
+.exaa .grid         { display: grid; gap: 8px; }
+.exaa .one-column   { grid-template-columns: 1fr; }
+.exaa .two-columns  { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.exaa .three-columns { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.exaa .four-columns  { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
-.exaa .two-columns {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.exaa .three-columns {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.exaa .four-columns {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
+/* --- Labels e inputs globais --- */
 .exaa label {
   display: flex;
   flex-direction: column;
   gap: 3px;
   font-weight: 700;
+  color: #E8DEFF;
 }
 
 .exaa label span {
   font-size: 0.75rem;
   text-transform: uppercase;
+  color: #C4AEED;
+  letter-spacing: 0.04em;
+}
+
+.exaa input:not([type="checkbox"]):not([name="name"]),
+.exaa select,
+.exaa textarea {
+  background: #0D1026;
+  color: #E8DEFF;
+  border: 1px solid #6C32A6;
+  border-radius: 3px;
+  padding: 3px 6px;
+}
+
+.exaa input:not([type="checkbox"]):not([name="name"]):focus,
+.exaa select:focus,
+.exaa textarea:focus {
+  outline: none;
+  border-color: #7D29F2;
+  box-shadow: 0 0 4px #7D29F233;
 }
 
 .exaa textarea {
@@ -67,20 +103,103 @@
   resize: vertical;
 }
 
+/* --- Headings --- */
+.exaa h2 {
+  color: #C4AEED;
+  border-bottom: 1px solid #6C32A6;
+  padding-bottom: 4px;
+  margin: 0 0 8px 0;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+/* --- Tabs --- */
 .exaa .sheet-tabs {
   display: flex;
-  gap: 8px;
-  border-top: 1px solid #777;
-  border-bottom: 1px solid #777;
-  padding: 6px 0;
+  gap: 4px;
+  background: #0D1026;
+  border: 1px solid #6C32A6;
+  border-radius: 4px;
+  padding: 4px 8px;
 }
 
 .exaa .sheet-tabs .item {
-  padding: 4px 8px;
+  padding: 4px 12px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #9B82BC;
+  border-bottom: 2px solid transparent;
+  border-radius: 2px;
+  transition: color 0.15s, border-color 0.15s;
+  cursor: pointer;
+}
+
+.exaa .sheet-tabs .item:hover {
+  color: #E8DEFF;
+  border-bottom-color: #6C32A6;
+}
+
+.exaa .sheet-tabs .item.active {
+  color: #E8DEFF;
+  border-bottom-color: #7D29F2;
+}
+
+/* --- Sheet body scrollbar --- */
+.exaa .sheet-body {
+  scrollbar-width: thin;
+  scrollbar-color: #6C32A6 #0D1026;
+}
+
+.exaa .sheet-body::-webkit-scrollbar        { width: 6px; }
+.exaa .sheet-body::-webkit-scrollbar-track  { background: #0D1026; }
+.exaa .sheet-body::-webkit-scrollbar-thumb  { background: #6C32A6; border-radius: 3px; }
+.exaa .sheet-body::-webkit-scrollbar-thumb:hover { background: #7D29F2; }
+
+/* --- Seções com espaçamento --- */
+.exaa .tab section { margin-top: 14px; }
+.exaa .tab section:first-child { margin-top: 0; }
+.secao-condicao,
+.secao-equipamentos { margin-top: 14px; }
+.exaa .tab section + section { margin-top: 14px; }
+
+.exaa .item-type {
+  margin: 0;
+  text-transform: capitalize;
+  color: #9B82BC;
+}
+
+/* --- Track fields (EXApoints / Marcas / Protagonismo) --- */
+.exaa .track-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
   font-weight: 700;
 }
 
-/* --- Grupos de Atributos + Habilidades --- */
+.exaa .track-field > span {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #C4AEED;
+  letter-spacing: 0.04em;
+}
+
+.exaa .checkbox-track {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  height: 28px;
+}
+
+.exaa .checkbox-track input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: #7D29F2;
+}
+
+/* --- Grupos Atributos + Habilidades --- */
 .atributos-habilidades-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -88,9 +207,10 @@
 }
 
 .atributo-grupo {
-  border: 1px solid rgba(0, 0, 0, 0.25);
+  border: 1px solid #6C32A6;
   border-radius: 5px;
   overflow: hidden;
+  background: #1D1340;
 }
 
 .atributo-header {
@@ -98,9 +218,9 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  padding: 5px 10px;
-  background: rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  padding: 6px 10px;
+  background: #381659;
+  border-bottom: 1px solid #6C32A6;
 }
 
 .atributo-label {
@@ -108,6 +228,7 @@
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  color: #E8DEFF;
   flex: 1;
 }
 
@@ -116,6 +237,9 @@
   text-align: center !important;
   font-weight: 700;
   font-size: 1rem;
+  background: #0D1026 !important;
+  color: #E8DEFF !important;
+  border: 1px solid #6C32A6 !important;
 }
 
 .habilidades-lista {
@@ -144,11 +268,22 @@
   cursor: pointer;
   line-height: 1;
   flex-shrink: 0;
+  background: #2A0F4A;
+  color: #C4AEED;
+  border: 1px solid #6C32A6;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.roll-btn:hover {
+  background: #6C32A6;
+  border-color: #9B5FE0;
+  color: #E8DEFF;
 }
 
 .skill-nome {
   font-size: 0.85rem;
   font-weight: 600;
+  color: #E8DEFF;
 }
 
 .skill-valor-input {
@@ -178,6 +313,16 @@
   cursor: pointer;
   line-height: 1;
   flex-shrink: 0;
+  background: #2A0F4A;
+  color: #C4AEED;
+  border: 1px solid #6C32A6;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.stepper-btn:hover {
+  background: #6C32A6;
+  border-color: #9B5FE0;
+  color: #E8DEFF;
 }
 
 .stepper-val {
@@ -185,6 +330,7 @@
   text-align: center;
   font-weight: 700;
   font-size: 0.95rem;
+  color: #E8DEFF;
 }
 
 .stepper-sm .stepper-btn { width: 18px; height: 18px; font-size: 0.8rem; }
@@ -199,17 +345,19 @@
   padding: 5px 8px;
   border-radius: 4px;
   border: 2px solid transparent;
+  background: #0D1026;
 }
 
-.dano-cor-0 { border-color: #28a745; }
-.dano-cor-1 { border-color: #ffc107; }
-.dano-cor-2 { border-color: #fd7e14; }
-.dano-cor-3 { border-color: #dc3545; }
+/* Verde suave → amarelo → laranja → vermelho */
+.dano-cor-0 { border-color: #3DD68C; }
+.dano-cor-1 { border-color: #D4A017; }
+.dano-cor-2 { border-color: #D4641A; }
+.dano-cor-3 { border-color: #CC2244; }
 
-.dano-cor-0 .dano-label-text { color: #28a745; }
-.dano-cor-1 .dano-label-text { color: #7a5e00; }
-.dano-cor-2 .dano-label-text { color: #7a3900; }
-.dano-cor-3 .dano-label-text { color: #c00020; }
+.dano-cor-0 .dano-label-text { color: #3DD68C; }
+.dano-cor-1 .dano-label-text { color: #D4A017; }
+.dano-cor-2 .dano-label-text { color: #D4641A; }
+.dano-cor-3 .dano-label-text { color: #E85070; }
 
 .dano-label-text { font-weight: 700; font-size: 0.85rem; }
 
@@ -229,10 +377,12 @@
 .defeito-desc {
   font-size: 0.8rem;
   font-style: italic;
-  opacity: 0.75;
+  color: #C4AEED;
   margin: 0;
   padding: 4px 8px;
-  border-left: 3px solid rgba(0, 0, 0, 0.2);
+  border-left: 3px solid #6C32A6;
+  background: #0D102666;
+  border-radius: 0 3px 3px 0;
 }
 
 .defeito2-toggle {
@@ -245,6 +395,7 @@
   text-transform: none !important;
   margin-top: 2px;
   cursor: pointer;
+  color: #C4AEED !important;
 }
 
 .defeito2-toggle input[type="checkbox"] {
@@ -252,62 +403,25 @@
   height: 14px;
   margin: 0;
   cursor: pointer;
+  accent-color: #7D29F2;
 }
 
 /* --- Validação de distribuição --- */
 .distribuicao-erro {
   font-size: 0.8rem;
-  color: #c00;
+  color: #E85070;
   font-weight: 700;
   padding: 5px 10px;
-  border: 1px solid #c00;
+  border: 1px solid #883348;
   border-radius: 3px;
   margin-top: 6px;
+  background: #1E0A10;
 }
 
-.exaa .editor {
-  min-height: 220px;
-}
+/* --- Editor de notas --- */
+.exaa .editor { min-height: 220px; }
 
-.exaa .tab section { margin-top: 14px; }
-.exaa .tab section:first-child { margin-top: 0; }
-.secao-condicao,
-.secao-equipamentos { margin-top: 14px; }
-
-.exaa .tab section + section { margin-top: 14px; }
-
-.exaa .item-type {
-  margin: 0;
-  text-transform: capitalize;
-  opacity: 0.75;
-}
-
-.exaa .track-field {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  font-weight: 700;
-}
-
-.exaa .track-field > span {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-}
-
-.exaa .checkbox-track {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  height: 28px;
-}
-
-.exaa .checkbox-track input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  margin: 0;
-  cursor: pointer;
-}
-
+/* --- Carga --- */
 .exaa .carga-label {
   display: inline-flex;
   flex-direction: column;
@@ -319,8 +433,10 @@
 .exaa .carga-label span {
   font-size: 0.75rem;
   text-transform: uppercase;
+  color: #C4AEED;
 }
 
+/* --- Equipamentos --- */
 .exaa .equipamentos-grid {
   display: flex;
   flex-direction: column;
@@ -339,12 +455,14 @@
   font-size: 0.75rem;
   text-transform: uppercase;
   font-weight: 700;
+  color: #C4AEED;
 }
 
 .exaa .equipamento-row span {
   text-align: center;
   font-weight: 700;
   font-size: 0.8rem;
+  color: #E8DEFF;
 }
 
 .exaa .equipamento-total {
@@ -352,7 +470,7 @@
   grid-template-columns: 20px 1fr 1fr 60px;
   gap: 8px;
   align-items: center;
-  border-top: 1px solid #777;
+  border-top: 1px solid #6C32A666;
   padding-top: 6px;
   margin-top: 2px;
 }
@@ -362,29 +480,34 @@
   text-transform: uppercase;
   font-weight: 700;
   text-align: right;
+  color: #C4AEED;
 }
 
 .exaa .total-value {
   text-align: center;
   font-weight: 700;
+  color: #E8DEFF;
 }
 
 .exaa .carga-alerta {
   margin-top: 8px;
   padding: 6px 10px;
-  border: 1px solid #c00;
+  border: 1px solid #883348;
   border-radius: 3px;
-  color: #c00;
+  color: #E85070;
   font-size: 0.85rem;
   font-weight: 700;
+  background: #1E0A10;
 }
 
-/* --- Chat: Teste de Habilidade --- */
+/* ============================================================
+   Chat: Teste de Habilidade
+   ============================================================ */
 .exaa-roll-msg p { margin: 4px 0; }
 
 .exaa-detalhe {
   font-size: 0.8rem;
-  opacity: 0.75;
+  opacity: 0.8;
   font-style: italic;
 }
 
@@ -403,43 +526,46 @@
 
 .exaa-dice-values { display: flex; gap: 4px; flex-wrap: wrap; }
 
+/* Dados base */
 .exaa-die {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 28px;
   height: 28px;
-  border: 2px solid #555;
+  border: 2px solid #6C32A6;
   border-radius: 4px;
   font-weight: 700;
   font-size: 0.95rem;
-  background: #e8e0d0;
+  background: #1D1340;
+  color: #E8DEFF;
 }
 
+/* Dados EXApoint */
 .exaa-die.exa {
-  border-color: #9370DB;
-  background: #4B0082;
-  color: #DCDCDC;
+  background: #381659;
+  border-color: #7D29F2;
+  color: #E8DEFF;
 }
 
+/* Dado vencedor */
 .exaa-die.winner {
-  border-color: #2a7a2a;
-  background: #d4edda;
-  color: #155724;
-  box-shadow: 0 0 4px #2a7a2a88;
+  background: #0D2818;
+  border-color: #2DB87A;
+  color: #2DB87A;
 }
 
 .exaa-die.exa.winner {
-  border-color: #9370DB;
-  background: #6a0dad;
-  color: #DCDCDC;
-  box-shadow: 0 0 6px #9370DB99;
+  background: #2A1040;
+  border-color: #9B5FE0;
+  color: #D4B8FF;
 }
 
+/* Dado EXA com 1 (perda de EXApoint) */
 .exaa-die.miss {
-  border-color: #c00;
-  background: #fde;
-  color: #c00;
+  background: #1E0A10;
+  border-color: #883348;
+  color: #E85070;
 }
 
 .exaa-resultado {
@@ -450,12 +576,14 @@
 
 .exaa-consequence {
   font-size: 0.85rem;
-  color: #c00;
+  color: #E85070;
   font-weight: 700;
   margin-top: 4px !important;
 }
 
-/* --- Diálogo: Teste de Habilidade --- */
+/* ============================================================
+   Diálogo: Teste de Habilidade
+   ============================================================ */
 .exaa-dialog-form {
   display: flex;
   flex-direction: column;
@@ -509,36 +637,40 @@
   margin: 0;
   flex-shrink: 0;
   cursor: pointer;
+  accent-color: #7D29F2;
 }
 
-/* --- Botão Sobrecarga (chat) --- */
+/* ============================================================
+   Botão Sobrecarga (chat)
+   ============================================================ */
 .exaa-sobrecarga-wrapper { margin-top: 8px; }
 
 .exaa-sobrecarga-btn {
   display: block;
   width: 100%;
   padding: 6px 12px;
-  background: #b00020;
-  color: #fff;
-  border: 2px solid #7a0016;
+  background: #7A0016;
+  color: #FFB8C4;
+  border: 2px solid #AA2040;
   border-radius: 4px;
   font-weight: 700;
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.15s, border-color 0.15s;
 }
 
 .exaa-sobrecarga-btn:hover:not(:disabled) {
-  background: #d4002a;
-  border-color: #b00020;
+  background: #9A001C;
+  border-color: #CC2244;
+  color: #FFCCD6;
 }
 
 .exaa-sobrecarga-btn.exaa-sobrecarga-usada,
 .exaa-sobrecarga-btn:disabled {
-  background: #555;
-  border-color: #333;
-  color: #aaa;
+  background: #1A0F28;
+  border-color: #4A3060;
+  color: #7A6490;
   cursor: not-allowed;
 }

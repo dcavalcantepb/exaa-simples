@@ -206,16 +206,16 @@
           <div class="modulo-card">
             <div class="modulo-header">Arma Secundária</div>
             <div class="modulo-body">
-              <label><span>Nome</span><input name="system.exacom.armaSecundaria.nome" type="text" value="{{system.exacom.armaSecundaria.nome}}" /></label>
+              <label><span>Nome</span><input name="system.exacom.modulos.armaSecundaria.nome" type="text" value="{{system.exacom.modulos.armaSecundaria.nome}}" /></label>
               <label>
                 <span>Tipo</span>
-                <select name="system.exacom.armaSecundaria.tipo">
+                <select name="system.exacom.modulos.armaSecundaria.tipo">
                   {{#each armaSecundariaTipoOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
                 </select>
               </label>
               <label>
                 <span>Porte</span>
-                <select name="system.exacom.armaSecundaria.porte">
+                <select name="system.exacom.modulos.armaSecundaria.porte">
                   {{#each armaSecundariaPorteOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
                 </select>
               </label>
@@ -225,10 +225,10 @@
           <div class="modulo-card">
             <div class="modulo-header">Suporte</div>
             <div class="modulo-body">
-              <label><span>Nome</span><input name="system.exacom.suporte.nome" type="text" value="{{system.exacom.suporte.nome}}" /></label>
+              <label><span>Nome</span><input name="system.exacom.modulos.suporte.nome" type="text" value="{{system.exacom.modulos.suporte.nome}}" /></label>
               <label>
                 <span>Categoria</span>
-                <select name="system.exacom.suporte.categoria">
+                <select name="system.exacom.modulos.suporte.categoria">
                   {{#each suporteCategoriaOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
                 </select>
               </label>
@@ -240,7 +240,7 @@
             <div class="modulo-body">
               <label>
                 <span>Porte</span>
-                <select name="system.exacom.blindagem.porte">
+                <select name="system.exacom.modulos.blindagem.porte">
                   {{#each blindagemPorteOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
                 </select>
               </label>

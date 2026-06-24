@@ -157,6 +157,114 @@
   font-weight: 700;
 }
 
+/* --- Stepper --- */
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.stepper-btn {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 3px;
+  cursor: pointer;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.stepper-val {
+  min-width: 18px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.stepper-sm .stepper-btn { width: 18px; height: 18px; font-size: 0.8rem; }
+.stepper-sm .stepper-val  { font-size: 0.85rem; }
+
+/* --- Dano com escala de cor --- */
+.dano-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  border: 2px solid transparent;
+}
+
+.dano-cor-0 { border-color: #28a745; }
+.dano-cor-1 { border-color: #ffc107; }
+.dano-cor-2 { border-color: #fd7e14; }
+.dano-cor-3 { border-color: #dc3545; }
+
+.dano-cor-0 .dano-label-text { color: #28a745; }
+.dano-cor-1 .dano-label-text { color: #7a5e00; }
+.dano-cor-2 .dano-label-text { color: #7a3900; }
+.dano-cor-3 .dano-label-text { color: #c00020; }
+
+.dano-label-text { font-weight: 700; font-size: 0.85rem; }
+
+/* --- Condição + Defeitos --- */
+.condicao-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.defeito-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.defeito-desc {
+  font-size: 0.8rem;
+  font-style: italic;
+  opacity: 0.75;
+  margin: 0;
+  padding: 4px 8px;
+  border-left: 3px solid rgba(0, 0, 0, 0.2);
+}
+
+.defeito2-toggle {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.defeito2-toggle input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  cursor: pointer;
+}
+
+/* --- Validação de distribuição --- */
+.distribuicao-erro {
+  font-size: 0.8rem;
+  color: #c00;
+  font-weight: 700;
+  padding: 5px 10px;
+  border: 1px solid #c00;
+  border-radius: 3px;
+  margin-top: 6px;
+}
+
 .exaa .editor {
   min-height: 220px;
 }

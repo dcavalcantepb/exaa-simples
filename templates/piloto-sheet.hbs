@@ -45,14 +45,22 @@
         <div class="atributo-grupo">
           <div class="atributo-header">
             <span class="atributo-label">{{atributoLabel}}</span>
-            <input name="system.atributos.{{atributoKey}}.value" type="number" value="{{atributoValue}}" class="atributo-valor-input" />
+            <div class="stepper">
+              <button type="button" class="stepper-btn" data-action="minus" data-field="system.atributos.{{atributoKey}}.value" data-max="3">−</button>
+              <span class="stepper-val">{{atributoValue}}</span>
+              <button type="button" class="stepper-btn" data-action="plus" data-field="system.atributos.{{atributoKey}}.value" data-max="3">+</button>
+            </div>
           </div>
           <div class="habilidades-lista">
             {{#each habilidades}}
             <div class="skill-row-grupo">
               <button type="button" class="roll-btn" data-roll-skill="{{key}}">⚄</button>
               <span class="skill-nome">{{label}}</span>
-              <input name="system.habilidades.{{key}}.value" type="number" value="{{value}}" class="skill-valor-input" />
+              <div class="stepper stepper-sm">
+                <button type="button" class="stepper-btn" data-action="minus" data-field="system.habilidades.{{key}}.value" data-max="3">−</button>
+                <span class="stepper-val">{{value}}</span>
+                <button type="button" class="stepper-btn" data-action="plus" data-field="system.habilidades.{{key}}.value" data-max="3">+</button>
+              </div>
             </div>
             {{/each}}
           </div>
@@ -60,11 +68,43 @@
         {{/each}}
       </div>
 
+      {{#unless distribuicaoValida}}
+      <p class="distribuicao-erro">Distribuição de pontos incorreta. Contate seu Operador.</p>
+      {{/unless}}
+
       <section class="secao-condicao">
         <h2>Condição</h2>
-        <div class="grid two-columns">
-          <label><span>Dano do Piloto: {{condicaoPiloto}}</span><input name="system.dano.piloto.value" type="number" value="{{system.dano.piloto.value}}" /></label>
-          <label><span>Defeito</span><input name="system.defeito" type="text" value="{{system.defeito}}" /></label>
+        <div class="condicao-layout">
+          <div class="dano-field dano-cor-{{system.dano.piloto.value}}">
+            <span class="dano-label-text">Piloto — {{condicaoPiloto}}</span>
+            <div class="stepper">
+              <button type="button" class="stepper-btn" data-action="minus" data-field="system.dano.piloto.value" data-max="3">−</button>
+              <span class="stepper-val">{{system.dano.piloto.value}}</span>
+              <button type="button" class="stepper-btn" data-action="plus" data-field="system.dano.piloto.value" data-max="3">+</button>
+            </div>
+          </div>
+          <div class="defeito-wrapper">
+            <label>
+              <span>Defeito</span>
+              <select name="system.defeito">
+                {{#each defeitoOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+              </select>
+            </label>
+            {{#if defeitoDesc}}<p class="defeito-desc">{{defeitoDesc}}</p>{{/if}}
+            <label class="defeito2-toggle">
+              <input type="checkbox" name="system.defeito2Ativo" {{#if defeito2Ativo}}checked{{/if}} />
+              Defeito Adicional (+1 Habilidade)
+            </label>
+            {{#if defeito2Ativo}}
+            <label>
+              <span>2º Defeito</span>
+              <select name="system.defeito2">
+                {{#each defeito2Options}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+              </select>
+            </label>
+            {{#if defeito2Desc}}<p class="defeito-desc">{{defeito2Desc}}</p>{{/if}}
+            {{/if}}
+          </div>
         </div>
       </section>
 
@@ -125,7 +165,14 @@
             {{/each}}
           </select>
         </label>
-        <label><span>Dano do EXACOM: {{condicaoEXACOM}}</span><input name="system.dano.exacom.value" type="number" value="{{system.dano.exacom.value}}" /></label>
+        <div class="dano-field dano-cor-{{system.dano.exacom.value}}">
+          <span class="dano-label-text">EXACOM — {{condicaoEXACOM}}</span>
+          <div class="stepper">
+            <button type="button" class="stepper-btn" data-action="minus" data-field="system.dano.exacom.value" data-max="3">−</button>
+            <span class="stepper-val">{{system.dano.exacom.value}}</span>
+            <button type="button" class="stepper-btn" data-action="plus" data-field="system.dano.exacom.value" data-max="3">+</button>
+          </div>
+        </div>
       </section>
       <section class="grid two-columns">
         <label><span>Arma Primária</span><input name="system.exacom.armaPrimaria" type="text" value="{{system.exacom.armaPrimaria}}" /></label>

@@ -132,7 +132,16 @@ export class EXAAActor extends Actor {
     }
 
     if (exalink && nucleo !== "nenhum") {
-      content += `
+      const temSeis = [...resultadosBase, ...resultadosEXA].some(v => v === 6);
+      if (temSeis) {
+        content += `
+        <div class="exaa-sobrecarga-wrapper">
+          <button class="exaa-sobrecarga-btn exaa-sobrecarga-usada" disabled>
+            Sobrecarga indisponível (dado 6 obtido)
+          </button>
+        </div>`;
+      } else {
+        content += `
         <div class="exaa-sobrecarga-wrapper">
           <button class="exaa-sobrecarga-btn"
                   data-actor-id="${this.id}"
@@ -142,6 +151,7 @@ export class EXAAActor extends Actor {
             Sobrecarga
           </button>
         </div>`;
+      }
     }
 
     content += `\n      </div>`;

@@ -12,8 +12,8 @@ const bounded = (initial, max) => new SchemaField({
   max: new NumberField({ required: true, integer: true, min: 0, initial: max })
 });
 
-const score = initial => new SchemaField({
-  value: new NumberField({ required: true, integer: true, min: 0, max: 10, initial })
+const score = (initial, max = 3) => new SchemaField({
+  value: new NumberField({ required: true, integer: true, min: 0, max, initial })
 });
 
 export class PilotoDataModel extends foundry.abstract.TypeDataModel {
@@ -56,6 +56,8 @@ export class PilotoDataModel extends foundry.abstract.TypeDataModel {
         { required: true, initial: Array(5).fill(null).map(() => ({ nome: "", tipo: "", porte: 0 })) }
       ),
       defeito: new StringField({ required: true, blank: true, initial: "" }),
+      defeito2Ativo: new BooleanField({ required: true, initial: false }),
+      defeito2: new StringField({ required: true, blank: true, initial: "" }),
       origem: new StringField({ required: true, blank: true, initial: "" }),
       objetivo: new StringField({ required: true, blank: true, initial: "" }),
       reves: new StringField({ required: true, blank: true, initial: "" }),

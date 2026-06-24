@@ -1,3 +1,17 @@
+const DEFEITOS = [
+  { value: "",           label: "Nenhum",     desc: "" },
+  { value: "assombrado", label: "Assombrado", desc: "O passado te persegue." },
+  { value: "arrogante",  label: "Arrogante",  desc: "Subestima os outros." },
+  { value: "covarde",    label: "Covarde",    desc: "Hesita diante do perigo." },
+  { value: "ganancioso", label: "Ganancioso", desc: "Quer riqueza ou poder." },
+  { value: "imprudente", label: "Imprudente", desc: "Age antes de pensar." },
+  { value: "ingenuo",    label: "Ingênuo",    desc: "Confia facilmente." },
+  { value: "instavel",   label: "Instável",   desc: "Sem controle emocional." },
+  { value: "procurado",  label: "Procurado",  desc: "Alguém caça você." },
+  { value: "teimoso",    label: "Teimoso",    desc: "Não sabe recuar." },
+  { value: "viciado",    label: "Viciado",    desc: "Depende de algo." }
+];
+
 export class EXAAActorSheet extends ActorSheet {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -82,6 +96,30 @@ export class EXAAActorSheet extends ActorSheet {
     context.nucleoOptions = Object.entries(CONFIG.EXAA.nucleos).map(([k, v]) => ({
       value: k, label: v, selected: k === nucleoAtual
     }));
+
+    // Defeitos
+    const sys = this.actor.system;
+    const defAtual  = sys.defeito  ?? "";
+    const def2Atual = sys.defeito2 ?? "";
+    context.defeito2Ativo  = sys.defeito2Ativo ?? false;
+    context.defeitoOptions  = DEFEITOS.map(d => ({ ...d, selected: d.value === defAtual }));
+    context.defeitoDesc     = DEFEITOS.find(d => d.value === defAtual)?.desc ?? "";
+    context.defeito2Options = DEFEITOS.map(d => ({ ...d, selected: d.value === def2Atual }));
+    context.defeito2Desc    = DEFEITOS.find(d => d.value === def2Atual)?.desc ?? "";
+
+    // Validação de distribuição de pontos
+    const atribVals = Object.values(sys.atributos).map(a => a.value).sort((a, b) => b - a);
+    const atribOk = JSON.stringify(atribVals) === JSON.stringify([3, 2, 2, 1]);
+    const habVals = Object.values(sys.habilidades).map(h => h.value);
+    const c3 = habVals.filter(v => v === 3).length;
+    const c2 = habVals.filter(v => v === 2).length;
+    const c1 = habVals.filter(v => v === 1).length;
+    const c0 = habVals.filter(v => v === 0).length;
+    const esperaC1 = context.defeito2Ativo ? 4 : 3;
+    const esperaC0 = context.defeito2Ativo ? 5 : 6;
+    const habOk = c3 === 1 && c2 === 3 && c1 === esperaC1 && c0 === esperaC0;
+    context.distribuicaoValida = atribOk && habOk;
+
     return context;
   }
 
@@ -96,6 +134,16 @@ export class EXAAActorSheet extends ActorSheet {
       const params = await this._abrirDialogoTeste(habilidadeLabel);
       if (!params) return;
       this.actor.rolarTeste({ habilidade, atributo, ...params });
+    });
+
+    html.find(".stepper-btn").on("click", async event => {
+      const btn = event.currentTarget;
+      const field = btn.dataset.field;
+      const action = btn.dataset.action;
+      const max = parseInt(btn.dataset.max ?? "10");
+      const current = Number(foundry.utils.getProperty(this.actor, field) ?? 0);
+      const newVal = action === "plus" ? Math.min(max, current + 1) : Math.max(0, current - 1);
+      await this.actor.update({ [field]: newVal });
     });
 
     html.find(".track-checkbox").on("click", async event => {

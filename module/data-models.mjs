@@ -64,6 +64,7 @@ export class PilotoDataModel extends foundry.abstract.TypeDataModel {
       exacom: new SchemaField({
         nome:   new StringField({ required: true, blank: true, initial: "" }),
         nucleo: new StringField({ required: true, blank: true, initial: "nenhum" }),
+        ativo:  new BooleanField({ required: true, initial: false }),
         modulos: new SchemaField({
           armaPrimaria: new SchemaField({
             nome:  new StringField({ required: true, blank: true, initial: "" }),

@@ -168,7 +168,7 @@ export class EXAAActorSheet extends ActorSheet {
       const atributo = CONFIG.EXAA.habilidadeAtributo[habilidade];
       const params = await this._abrirDialogoTeste(habilidadeLabel);
       if (!params) return;
-      this.actor.rolarTeste({ habilidade, atributo, ...params });
+      this.actor.rolarTeste({ habilidade, atributo, modificador: params.modificador, exapoints: params.exapoints });
     });
 
     html.find(".stepper-btn").on("click", async event => {
@@ -219,9 +219,12 @@ export class EXAAActorSheet extends ActorSheet {
       `<option value="${i}"${i === 0 ? " selected" : ""}>${i}</option>`
     ).join("");
 
+    const exacomAtivo = this.actor.system.exacom?.ativo ?? false;
     const nucleo = this.actor.system.exacom?.nucleo ?? "nenhum";
     const nucleoLabel = CONFIG.EXAA.nucleos[nucleo] ?? "Nenhum";
-    const temNucleo = nucleo !== "nenhum";
+    const exacomInfo = exacomAtivo && nucleo !== "nenhum"
+      ? `<p class="exaa-dialog-section-title exaa-exacom-ativo">⚡ EXACOM Ativo — Núcleo: ${nucleoLabel}</p>`
+      : `<p class="exaa-dialog-section-title">EXACOM inativo</p>`;
 
     return new Promise(resolve => {
       new Dialog({
@@ -237,13 +240,7 @@ export class EXAAActorSheet extends ActorSheet {
               <select name="exapoints">${exaOptions}</select>
             </div>
             <hr class="exaa-dialog-divider" />
-            <p class="exaa-dialog-section-title">EXACOM</p>
-            <div class="form-group">
-              <label class="exalink-label">
-                <input type="checkbox" name="exalink" ${!temNucleo ? "disabled" : ""} />
-                EXAlink${temNucleo ? ` — Núcleo: ${nucleoLabel}` : " (sem núcleo definido)"}
-              </label>
-            </div>
+            ${exacomInfo}
           </form>
         `,
         buttons: {
@@ -252,8 +249,7 @@ export class EXAAActorSheet extends ActorSheet {
             label: "Rolar",
             callback: html => resolve({
               modificador: Number(html.find("[name='modificador']").val()),
-              exapoints: Number(html.find("[name='exapoints']").val()),
-              exalink: html.find("[name='exalink']").is(":checked")
+              exapoints: Number(html.find("[name='exapoints']").val())
             })
           },
           cancel: {

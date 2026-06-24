@@ -24,20 +24,21 @@ export class EXAAActor extends Actor {
   static condicaoPorDano(dano, exacom) {
     const condicoes = exacom
       ? ["Perfeito Estado", "Dano Leve", "Dano Grave", "Parada Total"]
-      : ["Perfeito Estado", "Dano Leve", "Dano Grave", "Fora de Acao"];
+      : ["Perfeito Estado", "Dano Leve", "Dano Grave", "Fora de Ação"];
     return condicoes[Math.clamp(Number(dano) || 0, 0, 3)];
   }
 
-  async rolarTeste({ atributo, habilidade, modificador = 0, exapoints = 0, exalink = false } = {}) {
+  async rolarTeste({ atributo, habilidade, modificador = 0, exapoints = 0 } = {}) {
     if (this.type !== "piloto") return;
 
     const valorAtributo = this.system.atributos?.[atributo]?.value ?? 0;
     const valorHabilidade = this.system.habilidades?.[habilidade]?.value ?? 0;
     const penalidade = this.system.sindrome?.value ?? 0;
 
-    // Bônus do Núcleo EXACOM
+    // Bônus do Núcleo EXACOM (lido do campo Ativo na ficha)
     let bonusEXACOM = 0;
     let tipoEXACOM = "";
+    const exalink = this.system.exacom?.ativo ?? false;
     const nucleo = this.system.exacom?.nucleo ?? "nenhum";
     if (exalink && nucleo !== "nenhum") {
       const atribNucleo  = CONFIG.EXAA.nucleoAtributo[nucleo];
@@ -156,9 +157,12 @@ export class EXAAActor extends Actor {
 
     content += `\n      </div>`;
 
+    const allRolls = dadosEXA > 0 ? [rollBase, rollEXA] : [rollBase];
     await ChatMessage.create({
       speaker: ChatMessage.getSpeaker({ actor: this }),
-      content
+      content,
+      rolls: allRolls,
+      sound: CONFIG.sounds.dice
     });
   }
 

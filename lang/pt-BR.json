@@ -1,4 +1,14 @@
 {
+  "TYPES": {
+    "Actor": {
+      "piloto": "Piloto",
+      "ameaca": "Ameaça"
+    },
+    "Item": {
+      "equipamento": "Equipamento",
+      "modulo": "Módulo"
+    }
+  },
   "EXAA": {
     "SystemName": "EXAA Simples"
   }

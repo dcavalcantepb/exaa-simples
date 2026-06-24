@@ -20,8 +20,8 @@
             {{/each}}
           </div>
         </div>
-        <div class="track-field">
-          <span>Protagonismo</span>
+        <div class="track-field protagonismo-field">
+          <span>Ponto de Protagonismo</span>
           <div class="checkbox-track">
             <input type="checkbox" class="track-checkbox" data-field="system.protagonismo" data-index="0" {{#if protagonismoChecked}}checked{{/if}} />
           </div>
@@ -156,7 +156,7 @@
 
     <div class="tab" data-group="primary" data-tab="exacom">
 
-      <section class="grid two-columns">
+      <section class="exacom-info-grid">
         <label><span>Nome</span><input name="system.exacom.nome" type="text" value="{{system.exacom.nome}}" /></label>
         <label>
           <span>Núcleo</span>
@@ -165,6 +165,10 @@
               <option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>
             {{/each}}
           </select>
+        </label>
+        <label class="exacom-ativo-label">
+          <span>Ativo</span>
+          <input type="checkbox" name="system.exacom.ativo" {{#if system.exacom.ativo}}checked{{/if}} />
         </label>
       </section>
 
@@ -253,10 +257,10 @@
     </div>
 
     <div class="tab" data-group="primary" data-tab="background">
-      <section class="grid three-columns">
-        <label><span>Origem</span><textarea name="system.origem">{{system.origem}}</textarea></label>
-        <label><span>Objetivo</span><textarea name="system.objetivo">{{system.objetivo}}</textarea></label>
-        <label><span>Revés</span><textarea name="system.reves">{{system.reves}}</textarea></label>
+      <section class="grid one-column">
+        <label><span>Origem</span><textarea name="system.origem" class="background-textarea">{{system.origem}}</textarea></label>
+        <label><span>Objetivo</span><textarea name="system.objetivo" class="background-textarea">{{system.objetivo}}</textarea></label>
+        <label><span>Revés</span><textarea name="system.reves" class="background-textarea">{{system.reves}}</textarea></label>
       </section>
     </div>
 

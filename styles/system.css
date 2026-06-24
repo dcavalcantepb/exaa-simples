@@ -110,13 +110,16 @@
 
 /* --- Headings --- */
 .exaa h2 {
-  color: #C4AEED;
-  border-bottom: 1px solid #6C32A6;
-  padding-bottom: 4px;
-  margin: 0 0 8px 0;
-  font-size: 0.85rem;
+  color: #E8DEFF;
+  border-bottom: 2px solid #6C32A6;
+  border-left: 3px solid #7D29F2;
+  padding: 5px 0 6px 10px;
+  margin: 0 0 10px 0;
+  font-size: 0.95rem;
   text-transform: uppercase;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.08em;
+  background: linear-gradient(90deg, #2A1050 0%, transparent 70%);
+  border-radius: 2px 0 0 0;
 }
 
 /* --- Tabs --- */
@@ -207,7 +210,7 @@
   color: #9B82BC;
 }
 
-/* --- Track fields (EXApoints / Marcas / Protagonismo) --- */
+/* --- Track fields (EXApoints / Marcas / Ponto de Protagonismo) --- */
 .exaa .track-field {
   display: flex;
   flex-direction: column;
@@ -235,6 +238,55 @@
   margin: 0;
   cursor: pointer;
   accent-color: #7D29F2;
+}
+
+/* Ponto de Protagonismo — destaque especial */
+.exaa .protagonismo-field {
+  background: linear-gradient(135deg, #1A0A2E 0%, #0D1026 100%);
+  border: 1px solid #7D29F2;
+  border-radius: 5px;
+  padding: 5px 10px;
+  box-shadow: 0 0 8px #7D29F222;
+}
+
+.exaa .protagonismo-field > span {
+  color: #C4AEED !important;
+  font-size: 0.7rem !important;
+}
+
+.exaa .protagonismo-field .checkbox-track input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  accent-color: #7D29F2;
+}
+
+/* --- EXACOM info grid (Nome + Núcleo + Ativo) --- */
+.exacom-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  align-items: end;
+}
+
+.exacom-ativo-label {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 52px;
+}
+
+.exacom-ativo-label input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: #7D29F2;
+}
+
+/* --- Background tab --- */
+.exaa .background-textarea {
+  min-height: 140px;
 }
 
 /* --- Grupos Atributos + Habilidades --- */
@@ -459,6 +511,64 @@
 /* --- Editor de notas --- */
 .exaa .editor { min-height: 220px; }
 
+.exaa .editor-toolbar {
+  background: #0D1026;
+  border: 1px solid #6C32A6;
+  border-radius: 3px 3px 0 0;
+  border-bottom: none;
+  padding: 4px 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.exaa .editor-toolbar button,
+.exaa .editor-toolbar .control-tool {
+  background: transparent;
+  color: #9B82BC;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  padding: 3px 7px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  line-height: 1.4;
+}
+
+.exaa .editor-toolbar button:hover,
+.exaa .editor-toolbar .control-tool:hover {
+  background: #381659;
+  color: #E8DEFF;
+  border-color: #6C32A6;
+}
+
+.exaa .editor-toolbar button.active,
+.exaa .editor-toolbar .control-tool.active {
+  background: #6C32A6;
+  color: #E8DEFF;
+  border-color: #7D29F2;
+}
+
+.exaa .editor .editor-content,
+.exaa .editor prosemirror,
+.exaa .editor .prosemirror {
+  background: #0D1026;
+  border: 1px solid #6C32A6;
+  border-top: none;
+  color: #E8DEFF;
+  min-height: 200px;
+  padding: 10px;
+  border-radius: 0 0 3px 3px;
+}
+
+.exaa .editor .editor-content:focus,
+.exaa .editor prosemirror:focus,
+.exaa .editor .prosemirror:focus {
+  outline: none;
+  border-color: #7D29F2;
+  box-shadow: 0 0 4px #7D29F233;
+}
+
 /* --- Carga --- */
 .exaa .carga-label {
   display: inline-flex;
@@ -658,24 +768,10 @@
   opacity: 0.6;
 }
 
-.exalink-label {
-  display: flex !important;
-  flex-direction: row !important;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.85rem !important;
-  font-weight: 600 !important;
-  text-transform: none !important;
-  cursor: pointer;
-}
-
-.exalink-label input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  margin: 0;
-  flex-shrink: 0;
-  cursor: pointer;
-  accent-color: #7D29F2;
+.exaa-exacom-ativo {
+  color: #7D29F2 !important;
+  font-weight: 700 !important;
+  opacity: 1 !important;
 }
 
 /* ============================================================

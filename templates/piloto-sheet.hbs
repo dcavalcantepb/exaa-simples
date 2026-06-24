@@ -187,16 +187,16 @@
           <div class="modulo-card">
             <div class="modulo-header">Arma Primária</div>
             <div class="modulo-body">
-              <label><span>Nome</span><input name="system.exacom.armaPrimaria.nome" type="text" value="{{system.exacom.armaPrimaria.nome}}" /></label>
+              <label><span>Nome</span><input name="system.exacom.modulos.armaPrimaria.nome" type="text" value="{{system.exacom.modulos.armaPrimaria.nome}}" /></label>
               <label>
                 <span>Tipo</span>
-                <select name="system.exacom.armaPrimaria.tipo">
+                <select name="system.exacom.modulos.armaPrimaria.tipo">
                   {{#each armaPrimariaTipoOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
                 </select>
               </label>
               <label>
                 <span>Porte</span>
-                <select name="system.exacom.armaPrimaria.porte">
+                <select name="system.exacom.modulos.armaPrimaria.porte">
                   {{#each armaPrimariaPorteOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
                 </select>
               </label>

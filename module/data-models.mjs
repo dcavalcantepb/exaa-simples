@@ -62,24 +62,26 @@ export class PilotoDataModel extends foundry.abstract.TypeDataModel {
       objetivo: new StringField({ required: true, blank: true, initial: "" }),
       reves: new StringField({ required: true, blank: true, initial: "" }),
       exacom: new SchemaField({
-        nome: new StringField({ required: true, blank: true, initial: "" }),
+        nome:   new StringField({ required: true, blank: true, initial: "" }),
         nucleo: new StringField({ required: true, blank: true, initial: "nenhum" }),
-        armaPrimaria: new SchemaField({
-          nome:  new StringField({ required: true, blank: true, initial: "" }),
-          tipo:  new StringField({ required: true, blank: true, initial: "" }),
-          porte: new StringField({ required: true, blank: true, initial: "" })
-        }),
-        armaSecundaria: new SchemaField({
-          nome:  new StringField({ required: true, blank: true, initial: "" }),
-          tipo:  new StringField({ required: true, blank: true, initial: "" }),
-          porte: new StringField({ required: true, blank: true, initial: "" })
-        }),
-        suporte: new SchemaField({
-          nome:      new StringField({ required: true, blank: true, initial: "" }),
-          categoria: new StringField({ required: true, blank: true, initial: "" })
-        }),
-        blindagem: new SchemaField({
-          porte: new StringField({ required: true, blank: true, initial: "" })
+        modulos: new SchemaField({
+          armaPrimaria: new SchemaField({
+            nome:  new StringField({ required: true, blank: true, initial: "" }),
+            tipo:  new StringField({ required: true, blank: true, initial: "" }),
+            porte: new StringField({ required: true, blank: true, initial: "" })
+          }),
+          armaSecundaria: new SchemaField({
+            nome:  new StringField({ required: true, blank: true, initial: "" }),
+            tipo:  new StringField({ required: true, blank: true, initial: "" }),
+            porte: new StringField({ required: true, blank: true, initial: "" })
+          }),
+          suporte: new SchemaField({
+            nome:      new StringField({ required: true, blank: true, initial: "" }),
+            categoria: new StringField({ required: true, blank: true, initial: "" })
+          }),
+          blindagem: new SchemaField({
+            porte: new StringField({ required: true, blank: true, initial: "" })
+          })
         })
       }),
       notas: new HTMLField({ required: true, blank: true })

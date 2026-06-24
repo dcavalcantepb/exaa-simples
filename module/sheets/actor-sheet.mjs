@@ -36,7 +36,8 @@ export class EXAAActorSheet extends ActorSheet {
 
   async getData(options) {
     const context = await super.getData(options);
-    context.system = this.actor.system;
+    const sys = this.actor.system;
+    context.system = sys;
     context.atributos = CONFIG.EXAA.atributos;
     context.habilidades = CONFIG.EXAA.habilidades;
     context.nucleos = CONFIG.EXAA.nucleos;
@@ -117,19 +118,19 @@ export class EXAAActorSheet extends ActorSheet {
       { value: "interferencia", label: "Interferência" }
     ];
     const opt = (arr, val) => arr.map(o => ({ ...o, selected: o.value === (val ?? "") }));
-    const ap  = sys.exacom?.armaPrimaria   ?? {};
-    const as_ = sys.exacom?.armaSecundaria ?? {};
-    const sup = sys.exacom?.suporte        ?? {};
-    const bl  = sys.exacom?.blindagem      ?? {};
-    context.armaPrimariaTipoOptions    = opt(TIPO_ARMA,        ap.tipo      ?? "");
-    context.armaPrimariaPorteOptions   = opt(PORTE_MODULO,     ap.porte     ?? "");
-    context.armaSecundariaTipoOptions  = opt(TIPO_ARMA,        as_.tipo     ?? "");
-    context.armaSecundariaPorteOptions = opt(PORTE_MODULO,     as_.porte    ?? "");
+    const mod = sys.exacom?.modulos       ?? {};
+    const ap  = mod.armaPrimaria          ?? {};
+    const as_ = mod.armaSecundaria        ?? {};
+    const sup = mod.suporte               ?? {};
+    const bl  = mod.blindagem             ?? {};
+    context.armaPrimariaTipoOptions    = opt(TIPO_ARMA,         ap.tipo       ?? "");
+    context.armaPrimariaPorteOptions   = opt(PORTE_MODULO,      ap.porte      ?? "");
+    context.armaSecundariaTipoOptions  = opt(TIPO_ARMA,         as_.tipo      ?? "");
+    context.armaSecundariaPorteOptions = opt(PORTE_MODULO,      as_.porte     ?? "");
     context.suporteCategoriaOptions    = opt(CATEGORIA_SUPORTE, sup.categoria ?? "");
-    context.blindagemPorteOptions      = opt(PORTE_MODULO,     bl.porte     ?? "");
+    context.blindagemPorteOptions      = opt(PORTE_MODULO,      bl.porte      ?? "");
 
     // Defeitos
-    const sys = this.actor.system;
     const defAtual  = sys.defeito  ?? "";
     const def2Atual = sys.defeito2 ?? "";
     context.defeito2Ativo  = sys.defeito2Ativo ?? false;

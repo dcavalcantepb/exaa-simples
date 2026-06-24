@@ -21,7 +21,7 @@
           </div>
         </div>
         <div class="track-field protagonismo-field">
-          <span>Ponto de Protagonismo</span>
+          <span>Ponto de<br>Protagonismo</span>
           <div class="checkbox-track">
             <input type="checkbox" class="track-checkbox" data-field="system.protagonismo" data-index="0" {{#if protagonismoChecked}}checked{{/if}} />
           </div>
@@ -74,37 +74,39 @@
 
       <section class="secao-condicao">
         <h2>Condição</h2>
-        <div class="condicao-layout">
-          <div class="dano-field dano-cor-{{system.dano.piloto.value}}">
-            <span class="dano-label-text">Piloto — {{condicaoPiloto}}</span>
-            <div class="stepper">
-              <button type="button" class="stepper-btn" data-action="minus" data-field="system.dano.piloto.value" data-max="3">−</button>
-              <span class="stepper-val">{{system.dano.piloto.value}}</span>
-              <button type="button" class="stepper-btn" data-action="plus" data-field="system.dano.piloto.value" data-max="3">+</button>
-            </div>
+        <div class="dano-field dano-cor-{{system.dano.piloto.value}}">
+          <span class="dano-label-text">Piloto — {{condicaoPiloto}}</span>
+          <div class="stepper">
+            <button type="button" class="stepper-btn" data-action="minus" data-field="system.dano.piloto.value" data-max="3">−</button>
+            <span class="stepper-val">{{system.dano.piloto.value}}</span>
+            <button type="button" class="stepper-btn" data-action="plus" data-field="system.dano.piloto.value" data-max="3">+</button>
           </div>
-          <div class="defeito-wrapper">
-            <label>
-              <span>Defeito</span>
-              <select name="system.defeito">
-                {{#each defeitoOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
-              </select>
-            </label>
-            {{#if defeitoDesc}}<p class="defeito-desc">{{defeitoDesc}}</p>{{/if}}
-            <label class="defeito2-toggle">
-              <input type="checkbox" name="system.defeito2Ativo" {{#if defeito2Ativo}}checked{{/if}} />
-              Defeito Adicional (+1 Habilidade)
-            </label>
-            {{#if defeito2Ativo}}
-            <label>
-              <span>2º Defeito</span>
-              <select name="system.defeito2">
-                {{#each defeito2Options}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
-              </select>
-            </label>
-            {{#if defeito2Desc}}<p class="defeito-desc">{{defeito2Desc}}</p>{{/if}}
-            {{/if}}
-          </div>
+        </div>
+      </section>
+
+      <section class="secao-defeitos">
+        <h2>Defeitos</h2>
+        <div class="defeito-wrapper">
+          <label>
+            <span>Defeito</span>
+            <select name="system.defeito">
+              {{#each defeitoOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+            </select>
+          </label>
+          {{#if defeitoDesc}}<p class="defeito-desc">{{defeitoDesc}}</p>{{/if}}
+          <label class="defeito2-toggle">
+            <input type="checkbox" name="system.defeito2Ativo" {{#if defeito2Ativo}}checked{{/if}} />
+            Defeito Adicional (+1 Habilidade)
+          </label>
+          {{#if defeito2Ativo}}
+          <label>
+            <span>2º Defeito</span>
+            <select name="system.defeito2">
+              {{#each defeito2Options}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+            </select>
+          </label>
+          {{#if defeito2Desc}}<p class="defeito-desc">{{defeito2Desc}}</p>{{/if}}
+          {{/if}}
         </div>
       </section>
 

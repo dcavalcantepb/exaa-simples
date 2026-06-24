@@ -245,13 +245,22 @@
   background: linear-gradient(135deg, #1A0A2E 0%, #0D1026 100%);
   border: 1px solid #7D29F2;
   border-radius: 5px;
-  padding: 5px 10px;
+  padding: 5px 8px;
   box-shadow: 0 0 8px #7D29F222;
+  align-items: center;
 }
 
 .exaa .protagonismo-field > span {
   color: #C4AEED !important;
-  font-size: 0.7rem !important;
+  font-size: 0.68rem !important;
+  text-align: center;
+  line-height: 1.25;
+  letter-spacing: 0.03em;
+}
+
+.exaa .protagonismo-field .checkbox-track {
+  justify-content: center;
+  height: 26px;
 }
 
 .exaa .protagonismo-field .checkbox-track input[type="checkbox"] {
@@ -512,61 +521,70 @@
 .exaa .editor { min-height: 220px; }
 
 .exaa .editor-toolbar {
-  background: #0D1026;
-  border: 1px solid #6C32A6;
-  border-radius: 3px 3px 0 0;
-  border-bottom: none;
-  padding: 4px 6px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px;
+  background: #0D1026 !important;
+  border: 1px solid #6C32A6 !important;
+  border-radius: 3px 3px 0 0 !important;
+  border-bottom: none !important;
+  padding: 4px 6px !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 2px !important;
 }
 
 .exaa .editor-toolbar button,
-.exaa .editor-toolbar .control-tool {
-  background: transparent;
-  color: #9B82BC;
-  border: 1px solid transparent;
-  border-radius: 3px;
-  padding: 3px 7px;
-  cursor: pointer;
-  font-size: 0.8rem;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
-  line-height: 1.4;
+.exaa .editor-toolbar .control-tool,
+.exaa .editor-toolbar [data-action] {
+  background: #1D1340 !important;
+  color: #9B82BC !important;
+  border: 1px solid #3A2060 !important;
+  border-radius: 3px !important;
+  padding: 3px 7px !important;
+  cursor: pointer !important;
+  font-size: 0.8rem !important;
+  transition: background 0.15s, color 0.15s, border-color 0.15s !important;
+  line-height: 1.4 !important;
+  box-shadow: none !important;
+  filter: none !important;
 }
 
 .exaa .editor-toolbar button:hover,
-.exaa .editor-toolbar .control-tool:hover {
-  background: #381659;
-  color: #E8DEFF;
-  border-color: #6C32A6;
+.exaa .editor-toolbar .control-tool:hover,
+.exaa .editor-toolbar [data-action]:hover {
+  background: #381659 !important;
+  color: #E8DEFF !important;
+  border-color: #6C32A6 !important;
 }
 
 .exaa .editor-toolbar button.active,
-.exaa .editor-toolbar .control-tool.active {
-  background: #6C32A6;
-  color: #E8DEFF;
-  border-color: #7D29F2;
+.exaa .editor-toolbar .control-tool.active,
+.exaa .editor-toolbar [data-action].active,
+.exaa .editor-toolbar button[aria-pressed="true"],
+.exaa .editor-toolbar .control-tool[aria-pressed="true"] {
+  background: #6C32A6 !important;
+  color: #E8DEFF !important;
+  border-color: #7D29F2 !important;
+  box-shadow: 0 0 4px #7D29F244 !important;
+  filter: none !important;
 }
 
 .exaa .editor .editor-content,
 .exaa .editor prosemirror,
 .exaa .editor .prosemirror {
-  background: #0D1026;
-  border: 1px solid #6C32A6;
-  border-top: none;
-  color: #E8DEFF;
-  min-height: 200px;
-  padding: 10px;
-  border-radius: 0 0 3px 3px;
+  background: #0D1026 !important;
+  border: 1px solid #6C32A6 !important;
+  border-top: none !important;
+  color: #E8DEFF !important;
+  min-height: 200px !important;
+  padding: 10px !important;
+  border-radius: 0 0 3px 3px !important;
 }
 
 .exaa .editor .editor-content:focus,
 .exaa .editor prosemirror:focus,
 .exaa .editor .prosemirror:focus {
-  outline: none;
-  border-color: #7D29F2;
-  box-shadow: 0 0 4px #7D29F233;
+  outline: none !important;
+  border-color: #7D29F2 !important;
+  box-shadow: 0 0 4px #7D29F233 !important;
 }
 
 /* --- Carga --- */

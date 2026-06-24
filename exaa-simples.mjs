@@ -76,6 +76,16 @@ Hooks.once("init", () => {
     modulo: ModuloDataModel
   };
 
+  CONFIG.Actor.typeLabels = {
+    piloto: "Piloto",
+    ameaca: "Ameaça"
+  };
+
+  CONFIG.Item.typeLabels = {
+    equipamento: "Equipamento",
+    modulo: "Módulo"
+  };
+
   CONFIG.Actor.trackableAttributes = {
     piloto: {
       bar: ["dano.piloto", "dano.exacom", "exapoints", "sindrome"],

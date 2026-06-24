@@ -148,7 +148,7 @@ export class EXAAActorSheet extends ActorSheet {
     const c1 = habVals.filter(v => v === 1).length;
     const c0 = habVals.filter(v => v === 0).length;
     const esperaC1 = context.defeito2Ativo ? 4 : 3;
-    const esperaC0 = context.defeito2Ativo ? 5 : 6;
+    const esperaC0 = context.defeito2Ativo ? 4 : 5;
     const habOk = c3 === 1 && c2 === 3 && c1 === esperaC1 && c0 === esperaC0;
     context.distribuicaoValida = atribOk && habOk;
 

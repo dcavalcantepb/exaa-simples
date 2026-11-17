@@ -27,6 +27,9 @@
           <span>Ponto de<br>Protagonismo</span>
           <div class="checkbox-track">
             <input type="checkbox" class="track-checkbox" data-field="system.protagonismo" data-index="0" {{#if protagonismoChecked}}checked{{/if}} />
+            {{#if protagonismoChecked}}
+              <button type="button" class="roll-btn protagonismo-btn" data-plot-twist title="Gastar o Ponto: propor um Plot Twist">★</button>
+            {{/if}}
           </div>
         </div>
       </div>

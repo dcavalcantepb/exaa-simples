@@ -8,6 +8,53 @@ export const PORTE_NUM = { leve: 1, medio: 2, pesado: 3 };
 const esc = v => Handlebars.escapeExpression(typeof v === "string" ? v : JSON.stringify(v));
 const valores = roll => roll?.dice[0].results.map(r => r.result) ?? [];
 
+/* ---------------- Dado EXA no Dice So Nice ---------------- */
+
+const COLORSET_EXA = "exaa-exa";
+
+/** Registra o dado roxo dos EXApoints no Dice So Nice (se o módulo estiver ativo). */
+export function registrarDadoEXA() {
+  Hooks.once("diceSoNiceReady", dice3d => {
+    dice3d.addColorset({
+      name: COLORSET_EXA,
+      description: "EX:AA · EXApoint",
+      category: "EX:AA",
+      foreground: "#F6EEFF",
+      background: "#6A1FD1",
+      outline: "#14002E",
+      edge: "#B98CFF",
+      texture: "astral",
+      material: "metal"
+    });
+  });
+}
+
+const pintarEXA = roll => {
+  for (const termo of roll?.dice ?? []) {
+    termo.options.colorset = COLORSET_EXA;
+    termo.options.appearance = { colorset: COLORSET_EXA };
+  }
+  return roll;
+};
+
+const rolar = async (n, exa = false) => {
+  if (n <= 0) return null;
+  const roll = await new Roll(`${n}d6`).evaluate();
+  return exa ? pintarEXA(roll) : roll;
+};
+
+/** Anima pelo DSN sem passar rolls ao ChatMessage (no v13 isso renderiza os dados brutos junto ao HTML). */
+async function animar(...rolls) {
+  if (!game.dice3d) return;
+  for (const roll of rolls.filter(Boolean)) await game.dice3d.showForRoll(roll, game.user, true, null, false);
+}
+
+/** Monta o resultado de uma parada a partir dos valores já rolados. */
+function comporParada({ usaPior, numBase, base, exa }) {
+  const final = usaPior ? Math.min(...base) : Math.max(...base, ...exa);
+  return { usaPior, numBase, dadosEXA: exa.length, base, exa, final, todos: usaPior ? base : [...base, ...exa] };
+}
+
 /**
  * Rola uma parada de dados.
  * Base <= 0 sem EXApoints: 2d6, fica o menor. Com EXApoints, rolam-se só os dados EXA.
@@ -15,20 +62,24 @@ const valores = roll => roll?.dice[0].results.map(r => r.result) ?? [];
 export async function rolarParada(dadosBase, dadosEXA = 0) {
   const usaPior = dadosBase <= 0 && dadosEXA === 0;
   const numBase = usaPior ? 2 : Math.min(10, Math.max(0, dadosBase));
-  const rolar = async n => (n > 0 ? new Roll(`${n}d6`).evaluate() : null);
   const rollBase = await rolar(numBase);
-  const rollEXA = await rolar(dadosEXA);
-  const base = valores(rollBase);
-  const exa = valores(rollEXA);
-  const final = usaPior ? Math.min(...base) : Math.max(...base, ...exa);
+  const rollEXA = await rolar(dadosEXA, true);
+  await animar(rollBase, rollEXA);
+  return comporParada({ usaPior, numBase, base: valores(rollBase), exa: valores(rollEXA) });
+}
 
-  // Anima pelo DSN sem passar rolls ao ChatMessage (no v13 isso renderiza os dados brutos junto ao HTML)
-  if (game.dice3d) {
-    for (const roll of [rollBase, rollEXA].filter(Boolean)) {
-      await game.dice3d.showForRoll(roll, game.user, true, null, false);
-    }
-  }
-  return { usaPior, numBase, dadosEXA, base, exa, final, todos: usaPior ? base : [...base, ...exa] };
+/**
+ * Soma +1 dado EXA a uma parada já rolada.
+ * Se a parada era "sem dados" (2d6, fica o menor), ela dá lugar ao dado EXA, rolado normalmente.
+ */
+export async function somarDadoEXA(p) {
+  const roll = await rolar(1, true);
+  await animar(roll);
+  const novo = valores(roll)[0];
+  const parada = p.usaPior
+    ? comporParada({ usaPior: false, numBase: 0, base: [], exa: [novo] })
+    : comporParada({ usaPior: false, numBase: p.numBase, base: p.base, exa: [...p.exa, novo] });
+  return { p: parada, novo };
 }
 
 /** HTML dos grupos de dados, destacando o dado que decidiu o resultado. */
@@ -202,7 +253,7 @@ function podeUsar(message, btn) {
   const { acao, ator, alvo, contra } = btn.dataset;
   if (acao === "contra") return contra ? !!fromUuidSync(contra)?.isOwner : message.isOwner;
   if (!message.isOwner) return false;
-  if (acao === "sobrecarga") return !!fromUuidSync(ator)?.isOwner;
+  if (acao === "sobrecarga" || acao === "exa") return !!fromUuidSync(ator)?.isOwner;
   if (acao === "aplicar" && alvo) return !!fromUuidSync(alvo)?.isOwner;
   return true;
 }
@@ -211,6 +262,7 @@ async function executar(message, btn) {
   const d = btn.dataset;
 
   if (d.acao === "sobrecarga") return fromUuidSync(d.ator).sobrecarga(message, btn);
+  if (d.acao === "exa") return fromUuidSync(d.ator).maisUmEXA(message, btn);
 
   if (d.acao === "aplicar") {
     const alvo = d.alvo ? fromUuidSync(d.alvo) : Array.from(game.user.targets)[0]?.actor;

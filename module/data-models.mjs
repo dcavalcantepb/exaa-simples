@@ -102,6 +102,8 @@ export class AmeacaDataModel extends foundry.abstract.TypeDataModel {
         value: faixa(0, 10, 1),
         max: faixa(1, 10, 1)
       }),
+      ambiente: new BooleanField({ required: true, initial: false }),      // superada, não derrotada
+      metadeAbatida: new BooleanField({ required: true, initial: false }), // nível 1 em grupo: −1 de P
       objetivo: texto(),
       habilidadeEspecial: new HTMLField({ required: true, blank: true }),
       comoAge: texto(),

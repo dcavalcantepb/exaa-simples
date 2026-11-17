@@ -43,6 +43,12 @@ export class EXAAActorSheet extends ActorSheet {
       const escala = (n, atual) => Array.from({ length: n }, (_, i) => ({ value: i + 1, selected: i + 1 === atual }));
       context.periculosidadeOptions = escala(5, sys.periculosidade);
       context.letalidadeOptions = escala(3, sys.letalidade);
+      // Ameaça de ambiente: a Resistência vira uma trilha de superação, marcada pelo Operador
+      const marcadas = sys.resistencia.max - sys.resistencia.value;
+      context.superacaoBoxes = Array.from({ length: sys.resistencia.max }, (_, i) => i < marcadas);
+      context.superacaoMarcadas = marcadas;
+      context.superada = marcadas >= sys.resistencia.max;
+      context.nivel1 = sys.letalidade === 1;
       return context;
     }
     if (this.actor.type !== "piloto") return context;
@@ -188,7 +194,21 @@ export class EXAAActorSheet extends ActorSheet {
       const atributo = CONFIG.EXAA.habilidadeAtributo[habilidade];
       const params = await this._abrirDialogoTeste(`Teste: ${habilidadeLabel}`);
       if (!params) return;
-      this.actor.rolarTeste({ habilidade, atributo, modificador: params.modificador, exapoints: params.exapoints });
+      this.actor.rolarTeste({ habilidade, atributo, ...params });
+    });
+
+    html.find("[data-plot-twist]").on("click", async () => {
+      const escolha = await this._abrirDialogoPlotTwist();
+      if (escolha) this.actor.usarProtagonismo(escolha.twist, escolha.proposta);
+    });
+
+    html.find(".superacao-box").on("click", async event => {
+      event.preventDefault();
+      const { max, value } = this.actor.system.resistencia;
+      const index = parseInt(event.currentTarget.dataset.index);
+      const marcadas = max - value;
+      const novas = marcadas === index + 1 ? index : index + 1;
+      await this.actor.update({ "system.resistencia.value": max - novas });
     });
 
     html.find("[data-ataque]").on("click", async event => {
@@ -261,6 +281,15 @@ export class EXAAActorSheet extends ActorSheet {
               <label>EXApoints (disponíveis: ${maxEXA})</label>
               <select name="exapoints">${exaOptions}</select>
             </div>` : "";
+    const ajudaCampo = piloto ? `
+            <div class="form-group">
+              <label>Ajuda (Pilotos ajudando)</label>
+              <select name="ajuda">
+                <option value="0" selected>Nenhuma</option>
+                <option value="1">1 Piloto (+1d)</option>
+                <option value="2">2 Pilotos (+2d)</option>
+              </select>
+            </div>` : "";
 
     const infos = [];
     if (piloto) {
@@ -284,7 +313,7 @@ export class EXAAActorSheet extends ActorSheet {
             <div class="form-group">
               <label>Modificador</label>
               <select name="modificador">${modOptions}</select>
-            </div>${exaCampo}
+            </div>${ajudaCampo}${exaCampo}
             <hr class="exaa-dialog-divider" />
             ${infos.join("")}
           </form>
@@ -295,6 +324,7 @@ export class EXAAActorSheet extends ActorSheet {
             label: "Rolar",
             callback: html => resolve({
               modificador: Number(html.find("[name='modificador']").val()),
+              ajuda: Number(html.find("[name='ajuda']").val() ?? 0),
               exapoints: Number(html.find("[name='exapoints']").val() ?? 0)
             })
           },
@@ -339,6 +369,49 @@ export class EXAAActorSheet extends ActorSheet {
           }
         },
         default: "roll",
+        close: () => resolve(null)
+      }).render(true);
+    });
+  }
+
+  /** Escolha do Plot Twist ao gastar o Ponto de Protagonismo. */
+  async _abrirDialogoPlotTwist() {
+    const twists = this.actor.constructor.PLOT_TWISTS;
+    const opcoes = Object.entries(twists).map(([chave, t], i) => `
+      <label class="exaa-plot-opcao">
+        <input type="radio" name="twist" value="${chave}"${i === 0 ? " checked" : ""} />
+        <span><strong>${t.nome}</strong><br><small>${t.texto}</small></span>
+      </label>`).join("");
+
+    return new Promise(resolve => {
+      new Dialog({
+        title: `Ponto de Protagonismo: ${this.actor.name}`,
+        content: `
+          <form class="exaa-dialog-form">
+            <p class="exaa-dialog-section-title exaa-exacom-ativo">🌟 Escolha o Plot Twist</p>
+            ${opcoes}
+            <div class="form-group stacked">
+              <label>O que acontece? (opcional)</label>
+              <textarea name="proposta" rows="3" placeholder="Descreva a sua proposta ao Operador"></textarea>
+            </div>
+          </form>
+        `,
+        buttons: {
+          usar: {
+            icon: '<i class="fas fa-star"></i>',
+            label: "Gastar o Ponto",
+            callback: html => resolve({
+              twist: html.find("[name='twist']:checked").val(),
+              proposta: html.find("[name='proposta']").val() ?? ""
+            })
+          },
+          cancel: {
+            icon: '<i class="fas fa-times"></i>',
+            label: "Cancelar",
+            callback: () => resolve(null)
+          }
+        },
+        default: "usar",
         close: () => resolve(null)
       }).render(true);
     });

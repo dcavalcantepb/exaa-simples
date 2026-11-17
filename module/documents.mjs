@@ -1,5 +1,5 @@
 import {
-  PORTE_NUM, rolarParada, htmlParada, resultadoTeste, danoDoGolpe, textoDoGolpe,
+  PORTE_NUM, rolarParada, somarDadoEXA, htmlParada, resultadoTeste, danoDoGolpe, textoDoGolpe,
   capturarAlvos, botao, botoesAplicar, botoesContra, acoes, marcarUsado
 } from "./rolagem.mjs";
 
@@ -19,14 +19,48 @@ export class EXAAActor extends Actor {
       this.system.resistencia.value = Math.clamp(this.system.resistencia.value, 0, this.system.resistencia.max);
       this.system.nivel = this.system.letalidade;
       this.system.nivelLabel = NIVEIS_AMEACA[this.system.letalidade] ?? "";
+      // Nível 1 vem em grupo: com metade abatida, perde 1 de P
+      this.system.grupoEnfraquecido = this.system.letalidade === 1 && !!this.system.metadeAbatida;
+      this.system.pEfetiva = this.system.periculosidade - (this.system.grupoEnfraquecido ? 1 : 0);
     }
   }
 
-  /** Dispara o despertar do Gene EXA sempre que as Marcas chegam a 3, venha de onde vier. */
+  /** Guarda as Marcas de antes da atualização, para saber se a Síndrome avançou. */
+  async _preUpdate(changed, options, user) {
+    if ((await super._preUpdate(changed, options, user)) === false) return false;
+    if (this.type === "piloto") options.exaaMarcasAntes = this.system.sindrome?.value ?? 0;
+
+    // Na Ameaça de ambiente, mudar o total de R preserva as marcas de superação já feitas
+    const novoMax = foundry.utils.getProperty(changed, "system.resistencia.max");
+    if (this.type === "ameaca" && this.system.ambiente && novoMax !== undefined
+      && foundry.utils.getProperty(changed, "system.resistencia.value") === undefined) {
+      const marcadas = this.system.resistencia.max - this.system.resistencia.value;
+      foundry.utils.setProperty(changed, "system.resistencia.value", Math.max(0, novoMax - marcadas));
+    }
+  }
+
+  /** Narra cada Marca nova e dispara o despertar do Gene EXA com 3, venha de onde vier. */
   _onUpdate(changed, options, userId) {
     super._onUpdate(changed, options, userId);
     if (this.type !== "piloto" || userId !== game.user.id) return;
-    if ((foundry.utils.getProperty(changed, "system.sindrome.value") ?? 0) >= 3) this._despertarGeneEXA();
+    const marcas = foundry.utils.getProperty(changed, "system.sindrome.value");
+    if (marcas === undefined || marcas <= (options.exaaMarcasAntes ?? 0)) return;
+    if (marcas >= 3) this._despertarGeneEXA();
+    else this._narrarMarca(marcas);
+  }
+
+  async _narrarMarca(marcas) {
+    const sinais = {
+      1: "As veias escurecem sob a pele; ecos estranhos sussurram no EXAlink.",
+      2: "Os olhos brilham, o nariz sangra; a fúria começa a falar mais alto que as ordens."
+    };
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      content: `<div class="exaa-roll-msg exaa-marca">
+        <p>🩸 <strong>A Síndrome avança:</strong> ${this.name} carrega ${marcas} Marca${marcas > 1 ? "s" : ""}.</p>
+        <p class="exaa-narracao">${sinais[marcas]}</p>
+      </div>`
+    });
   }
 
   async _despertarGeneEXA() {
@@ -94,9 +128,7 @@ export class EXAAActor extends Actor {
    * @param {"corpo"|"distancia"} [modo]
    */
   paradaDeContraAtaque(modo = "corpo") {
-    if (this.type === "ameaca") {
-      return { dados: this.system.periculosidade, detalhe: `Periculosidade (${this.system.periculosidade})` };
-    }
+    if (this.type === "ameaca") return { dados: this.system.pEfetiva, detalhe: this.detalheP() };
     const [atributo, habilidade] = modo === "distancia" ? ["agilidade", "pontaria"] : ["fisico", "combate"];
     const dados = this.paradaDe(atributo, habilidade);
     return { dados, detalhe: `${CONFIG.EXAA.atributos[atributo]} + ${CONFIG.EXAA.habilidades[habilidade]} (${dados}d6)` };
@@ -167,9 +199,10 @@ export class EXAAActor extends Actor {
 
   /**
    * Teste de Atributo + Habilidade. Com `ataque`, vira um golpe e calcula o Dano pelo Porte.
+   * @param {number} [ajuda]   Pilotos ajudando (até 2): +1d cada
    * @param {object} [ataque]  { arma, porte }
    */
-  async rolarTeste({ atributo, habilidade, modificador = 0, exapoints = 0, ataque = null } = {}) {
+  async rolarTeste({ atributo, habilidade, modificador = 0, ajuda = 0, exapoints = 0, ataque = null } = {}) {
     if (this.type !== "piloto") return;
 
     const sys = this.system;
@@ -177,17 +210,17 @@ export class EXAAActor extends Actor {
     const valorHabilidade = sys.habilidades?.[habilidade]?.value ?? 0;
     const penalidade = sys.sindrome?.value ?? 0;
     const mod = Number(modificador) || 0;
+    const ajudantes = Math.clamp(Number(ajuda) || 0, 0, 2);
     const { tipo: tipoEXACOM } = this.bonusNucleo(atributo);
     const dadosEXA = Math.max(0, Number(exapoints) || 0);
 
-    const p = await rolarParada(this.paradaDe(atributo, habilidade) + mod, dadosEXA);
+    const p = await rolarParada(this.paradaDe(atributo, habilidade) + mod + ajudantes, dadosEXA);
 
     const labelAtributo = CONFIG.EXAA.atributos[atributo] ?? atributo;
     const labelHabilidade = CONFIG.EXAA.habilidades[habilidade] ?? habilidade;
-    const exaUms = p.exa.filter(r => r === 1).length;
-    const exaRestante = Math.max(0, (sys.exapoints?.value ?? 0) - exaUms);
 
     let detalhe = `${labelAtributo} (${valorAtributo}) + ${labelHabilidade} (${valorHabilidade})`;
+    if (ajudantes > 0) detalhe += ` + Ajuda (+${ajudantes})`;
     if (mod !== 0) detalhe += ` + Mod (${mod > 0 ? "+" : ""}${mod})`;
     if (penalidade > 0) detalhe += ` − Marcas (${penalidade})`;
     if (tipoEXACOM) detalhe += ` + EXACOM (${tipoEXACOM})`;
@@ -199,10 +232,28 @@ export class EXAAActor extends Actor {
       ? `<strong>${this.name}</strong> ataca${alvos.length ? ` <strong>${alvos.map(a => a.nome).join(", ")}</strong>` : ""} com <em>${ataque.arma}</em> (Porte ${ataque.porte})`
       : `<strong>${this.name}</strong> testa <em>${labelAtributo} + ${labelHabilidade}</em>`;
 
+    await this._mensagemTeste({ cabecalho, detalhe, ataque: ataque && { ...ataque, alvos } }, p, p.exa);
+  }
+
+  /**
+   * Publica o resultado de um Teste e aplica a perda de EXApoints dos dados EXA novos que mostraram 1.
+   * @param {object} teste        { cabecalho, detalhe, ataque: { arma, porte, alvos } | null }
+   * @param {object} p            parada rolada (ver rolarParada)
+   * @param {number[]} exaNovos   dados EXA rolados agora (os antigos já foram cobrados)
+   * @param {string} [prefacio]   linha de abertura (ex.: +1 EXApoint)
+   */
+  async _mensagemTeste(teste, p, exaNovos, prefacio = "") {
+    const { ataque } = teste;
+    const exaUms = exaNovos.filter(r => r === 1).length;
+    const exaDepois = Math.max(0, (this.system.exapoints?.value ?? 0) - exaUms);
+    // EXApoints ainda livres: os que não estão neste Teste como dados EXA que sobreviveram
+    const exaLivres = exaDepois - p.exa.filter(r => r !== 1).length;
+
     let content = `
       <div class="exaa-roll-msg">
-        <p>${cabecalho}</p>
-        <p class="exaa-detalhe">${detalhe}</p>
+        ${prefacio}
+        <p>${teste.cabecalho}</p>
+        <p class="exaa-detalhe">${teste.detalhe}</p>
         ${htmlParada(p)}
         <p class="exaa-resultado">Resultado: <strong>${resultadoTeste(p.final)}</strong></p>`;
 
@@ -210,8 +261,8 @@ export class EXAAActor extends Actor {
     if (ataque) {
       const dano = danoDoGolpe(p.final, p.todos, ataque.porte);
       content += `<p class="exaa-dano">${textoDoGolpe(p.final, dano, ataque.porte)}</p>`;
-      botoes += botoesAplicar(dano, alvos, `${this.name} (${ataque.arma})`);
-      if (p.final <= 1) botoes += botoesContra(this, alvos);
+      botoes += botoesAplicar(dano, ataque.alvos, `${this.name} (${ataque.arma})`);
+      if (p.final <= 1) botoes += botoesContra(this, ataque.alvos);
     }
 
     if (exaUms > 0) {
@@ -219,15 +270,22 @@ export class EXAAActor extends Actor {
         <p class="exaa-consequence">⚠ ${exaUms} dado(s) EXA com resultado 1: ${exaUms} EXApoint(s) perdido(s) e ${exaUms} Marca(s) adicionada(s).</p>`;
     }
 
+    // EXApoints valem a qualquer momento; num Teste comum, depois de um 6 não há o que melhorar
+    if (exaLivres > 0 && (p.final < 6 || ataque)) {
+      botoes += botao("exa", `+1 EXApoint (livres: ${exaLivres})`, {
+        ator: this.uuid, teste, parada: { usaPior: p.usaPior, numBase: p.numBase, base: p.base, exa: p.exa }
+      }, "exaa-exa-btn");
+    }
+
     if (this.noEXACOM) {
       const motivo = p.final === 6
         ? "já há um 6"
-        : this.motivoSemSobrecarga({ exapoints: exaRestante });
+        : this.motivoSemSobrecarga({ exapoints: exaDepois });
       botoes += motivo
         ? `<button type="button" class="exaa-acao-btn exaa-sobrecarga-btn exaa-usado" disabled>Sobrecarga indisponível: ${motivo}</button>`
         : botao("sobrecarga", "Sobrecarga", {
             ator: this.uuid, base: p.base, exa: p.exa,
-            ...(ataque ? { ataque: { ...ataque, alvos } } : {})
+            ...(ataque ? { ataque } : {})
           }, "exaa-sobrecarga-btn");
     }
 
@@ -235,20 +293,44 @@ export class EXAAActor extends Actor {
 
     await ChatMessage.create({ speaker: ChatMessage.getSpeaker({ actor: this }), content });
 
-    // Atualiza depois da mensagem, para que um eventual despertar do Gene EXA apareça em seguida
+    // Atualiza depois da mensagem, para que as Marcas e o Gene EXA apareçam em seguida
     if (exaUms > 0) await this._perderEXApoints(exaUms);
+  }
+
+  /**
+   * +1 EXApoint depois da rolagem: soma um dado EXA ao Teste e refaz o resultado (e o Dano, se for ataque).
+   * @returns {Promise<boolean>}
+   */
+  async maisUmEXA(message, btn) {
+    const teste = JSON.parse(btn.dataset.teste);
+    const anterior = JSON.parse(btn.dataset.parada);
+    const livres = (this.system.exapoints?.value ?? 0) - anterior.exa.filter(r => r !== 1).length;
+    if (livres <= 0) {
+      ui.notifications.warn(`${this.name} não tem EXApoints livres para somar a este Teste.`);
+      return false;
+    }
+
+    const { p, novo } = await somarDadoEXA(anterior);
+    await marcarUsado(message, { texto: "+1 EXApoint somado (veja abaixo)" });
+
+    const detalhe = anterior.usaPior
+      ? teste.detalhe.replace(" = sem dados: 2d6, fica o menor", " = 0d6") + " + 1d6 EXA"
+      : `${teste.detalhe} + 1d6 EXA`;
+    const prefacio = `<p>✚ <strong>+1 EXApoint!</strong> O dado EXA mostra ${novo}.</p>`;
+    await this._mensagemTeste({ ...teste, detalhe }, p, [novo], prefacio);
+    return true;
   }
 
   /**
    * Ataque com uma arma: Físico + Combate (arma branca) ou Agilidade + Pontaria (arma de fogo).
    * @param {object} arma  { nome, tipo: "arma-branca"|"arma-fogo", porte: 1-3 }
    */
-  rolarAtaque(arma, { modificador = 0, exapoints = 0 } = {}) {
+  rolarAtaque(arma, { modificador = 0, ajuda = 0, exapoints = 0 } = {}) {
     const corpo = arma.tipo === "arma-branca";
     return this.rolarTeste({
       atributo: corpo ? "fisico" : "agilidade",
       habilidade: corpo ? "combate" : "pontaria",
-      modificador, exapoints,
+      modificador, ajuda, exapoints,
       ataque: { arma: arma.nome || (corpo ? "Arma Branca" : "Arma de Fogo"), porte: arma.porte }
     });
   }
@@ -288,18 +370,54 @@ export class EXAAActor extends Actor {
     if (uns > 0) await this._perderEXApoints(uns);
   }
 
+  /* ---------------- Ponto de Protagonismo ---------------- */
+
+  static PLOT_TWISTS = {
+    flashback: { nome: "Flashback", texto: "Revele uma preparação feita antes da cena." },
+    revelacao: { nome: "Revelação", texto: "Introduza um fato novo, sem contradizer a cena." },
+    ultimoEsforco: { nome: "Último Esforço", texto: "Aja uma última vez antes de sofrer as consequências finais." },
+    contraTodas: { nome: "Contra Todas as Chances", texto: "Anule, de forma épica, uma rolagem do Operador." }
+  };
+
+  /** Gasta o Ponto de Protagonismo e anuncia o Plot Twist proposto; o Operador valida se for plausível. */
+  async usarProtagonismo(chave, proposta = "") {
+    const twist = EXAAActor.PLOT_TWISTS[chave];
+    if (this.type !== "piloto" || !twist) return;
+    if ((this.system.protagonismo ?? 0) < 1) {
+      ui.notifications.warn(`${this.name} não tem Ponto de Protagonismo.`);
+      return;
+    }
+    await this.update({ "system.protagonismo": 0 });
+    const texto = proposta.trim();
+    await ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      content: `<div class="exaa-roll-msg exaa-plot-twist">
+        <p>🌟 <strong>${this.name}</strong> gasta o Ponto de Protagonismo: <strong>${twist.nome}</strong></p>
+        <p class="exaa-detalhe">${twist.texto}</p>
+        ${texto ? `<p class="exaa-narracao">“${Handlebars.escapeExpression(texto)}”</p>` : ""}
+        <p class="exaa-consequence">O Operador valida se for plausível.</p>
+      </div>`
+    });
+  }
+
   /* ---------------- Ataque da Ameaça ---------------- */
 
   /** A Ameaça rola P dados e causa Dano igual à sua Letalidade, pela mesma tabela dos Pilotos. */
+  /** "Periculosidade (3)", ou "Periculosidade (3) − Grupo pela metade (1)" para o grupo enfraquecido. */
+  detalheP() {
+    const { periculosidade: P, grupoEnfraquecido } = this.system;
+    return `Periculosidade (${P})${grupoEnfraquecido ? " − Grupo pela metade (1)" : ""}`;
+  }
+
   async rolarAtaqueAmeaca({ modificador = 0 } = {}) {
     if (this.type !== "ameaca") return;
-    const { periculosidade: P, letalidade: L } = this.system;
+    const { pEfetiva: P, letalidade: L } = this.system;
     const mod = Number(modificador) || 0;
     const p = await rolarParada(P + mod);
     const dano = danoDoGolpe(p.final, p.todos, L);
     const alvos = capturarAlvos();
 
-    let detalhe = `Periculosidade (${P})`;
+    let detalhe = this.detalheP();
     if (mod !== 0) detalhe += ` + Mod (${mod > 0 ? "+" : ""}${mod})`;
     detalhe += p.usaPior ? " = sem dados: 2d6, fica o menor" : ` = ${p.numBase}d6 · Letalidade ${L}`;
 

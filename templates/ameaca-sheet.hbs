@@ -4,7 +4,7 @@
     <div class="header-fields">
       <input name="name" type="text" value="{{actor.name}}" placeholder="Nome da Ameaça" />
       <div class="ameaca-linha">
-        <p class="ameaca-nivel">Nível {{system.nivel}} · {{system.nivelLabel}}</p>
+        <p class="ameaca-nivel">{{#if system.ambiente}}Ameaça de ambiente · {{/if}}Nível {{system.nivel}} · {{system.nivelLabel}}</p>
         <button type="button" class="ameaca-ataque-btn" data-ataque-ameaca title="Rola P dados e causa Dano igual à Letalidade">⚔ Atacar</button>
       </div>
     </div>
@@ -23,6 +23,16 @@
         {{#each letalidadeOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/each}}
       </select>
     </label>
+    {{#if system.ambiente}}
+    <label title="Quantas marcas são precisas para superá-la (1 a 10).">
+      <span>R · Total</span>
+      <input name="system.resistencia.max" type="number" min="1" max="10" value="{{system.resistencia.max}}" />
+    </label>
+    <div class="ameaca-status">
+      <span>Superação</span>
+      <p class="{{#if superada}}superada{{/if}}">{{#if superada}}Superada{{else}}{{superacaoMarcadas}} / {{system.resistencia.max}}{{/if}}</p>
+    </div>
+    {{else}}
     <label title="Resistência: quanto Dano ainda falta para derrotá-la.">
       <span>R · Atual</span>
       <input name="system.resistencia.value" type="number" min="0" max="10" value="{{system.resistencia.value}}" />
@@ -31,6 +41,31 @@
       <span>R · Máxima</span>
       <input name="system.resistencia.max" type="number" min="1" max="10" value="{{system.resistencia.max}}" />
     </label>
+    {{/if}}
+  </section>
+
+  {{#if system.ambiente}}
+  <section class="ameaca-superacao">
+    <div class="checkbox-track">
+      {{#each superacaoBoxes}}
+        <input type="checkbox" class="superacao-box" data-index="{{@index}}" {{#if this}}checked{{/if}} />
+      {{/each}}
+    </div>
+    <p class="ameaca-dica">Cada Sucesso dos Pilotos marca 1; um Sucesso Crítico, 2.</p>
+  </section>
+  {{/if}}
+
+  <section class="ameaca-opcoes">
+    <label>
+      <input type="checkbox" name="system.ambiente" {{#if system.ambiente}}checked{{/if}} />
+      Ameaça de ambiente (é superada, não derrotada)
+    </label>
+    {{#if nivel1}}
+    <label>
+      <input type="checkbox" name="system.metadeAbatida" {{#if system.metadeAbatida}}checked{{/if}} />
+      Grupo com metade abatida: −1 de P{{#if system.grupoEnfraquecido}} (ataca com {{system.pEfetiva}}){{/if}}
+    </label>
+    {{/if}}
   </section>
 
   <section class="grid one-column">

@@ -7,7 +7,7 @@ import {
 } from "./module/data-models.mjs";
 import { EXAAActorSheet } from "./module/sheets/actor-sheet.mjs";
 import { EXAAItemSheet } from "./module/sheets/item-sheet.mjs";
-import { registrarAcoesDoChat } from "./module/rolagem.mjs";
+import { registrarAcoesDoChat, registrarDadoEXA } from "./module/rolagem.mjs";
 
 Hooks.once("init", () => {
   CONFIG.EXAA = {
@@ -112,3 +112,4 @@ Hooks.once("init", () => {
 });
 
 registrarAcoesDoChat();
+registrarDadoEXA();

@@ -959,3 +959,97 @@
 }
 
 .exaa-acao-btn.exaa-sobrecarga-btn:hover:not(:disabled) { background: #9A001C; border-color: #CC2244; }
+
+/* ============================================================
+   Ponto de Protagonismo, Marcas e +1 EXApoint
+   ============================================================ */
+.exaa .protagonismo-field .checkbox-track { gap: 6px; }
+.exaa .protagonismo-btn {
+  width: 22px;
+  height: 22px;
+  font-size: 0.85rem;
+  color: #FFD76A;
+  border-color: #7D29F2;
+}
+
+.exaa-plot-opcao {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start;
+  gap: 8px;
+  font-weight: 400 !important;
+  cursor: pointer;
+}
+.exaa-plot-opcao input { margin-top: 3px; accent-color: #7D29F2; }
+.exaa-plot-opcao small { opacity: 0.8; }
+.exaa-dialog-form textarea { width: 100%; resize: vertical; }
+
+/* Texto narrativo: herda a cor do chat para ficar legível em qualquer tema */
+.exaa-narracao {
+  font-style: italic;
+  color: inherit;
+  border-left: 3px solid #7D29F2;
+  padding-left: 6px;
+}
+
+.exaa-acao-btn.exaa-exa-btn:not(:disabled) {
+  background: linear-gradient(135deg, #4B0F9E 0%, #7D29F2 100%);
+  border-color: #B98CFF;
+  color: #FFFFFF;
+}
+.exaa-acao-btn.exaa-exa-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5A16B8 0%, #9B5FE0 100%);
+}
+
+/* ============================================================
+   Ameaça: ambiente e grupo
+   ============================================================ */
+.exaa .ameaca-opcoes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 8px 0;
+}
+.exaa .ameaca-opcoes label {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.exaa .ameaca-opcoes input[type="checkbox"] { margin: 0; accent-color: #7D29F2; }
+
+.exaa .ameaca-status {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.exaa .ameaca-status > span {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #C4AEED;
+  letter-spacing: 0.04em;
+}
+.exaa .ameaca-status p {
+  margin: 0;
+  padding: 3px 6px;
+  font-weight: 700;
+  color: #E8DEFF;
+  border: 1px solid #6C32A6;
+  border-radius: 3px;
+  background: #0D1026;
+}
+.exaa .ameaca-status p.superada { color: #2DB87A; border-color: #2DB87A; }
+
+.exaa .ameaca-superacao { margin-top: 8px; }
+.exaa .ameaca-superacao .checkbox-track { display: flex; flex-wrap: wrap; gap: 6px; }
+.exaa .ameaca-superacao input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: #2DB87A;
+}
+.exaa .ameaca-dica { font-size: 0.8rem; font-style: italic; opacity: 0.8; margin: 4px 0 0; }

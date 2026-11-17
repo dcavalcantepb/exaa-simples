@@ -904,11 +904,14 @@
 
 .exaa .ameaca-ataque-btn:hover { background: #9A001C; border-color: #CC2244; }
 
+/* Usa a cor de texto do próprio chat (legível em tema claro ou escuro) e destaca com a barra lateral */
 .exaa-dano {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  color: #FFB8C4;
-  margin-top: 2px !important;
+  color: inherit;
+  border-left: 3px solid #E85070;
+  padding-left: 6px;
+  margin-top: 4px !important;
 }
 
 .exaa-acoes {

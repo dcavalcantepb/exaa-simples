@@ -90,15 +90,34 @@ export class PilotoDataModel extends foundry.abstract.TypeDataModel {
   }
 }
 
+const faixa = (min, max, initial) => new NumberField({ required: true, integer: true, min, max, initial });
+const texto = () => new StringField({ required: true, blank: true, initial: "" });
+
 export class AmeacaDataModel extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
-      objetivo: new StringField({ required: true, blank: true, initial: "" }),
-      perigo: new NumberField({ required: true, integer: true, min: 0, max: 3, initial: 1 }),
-      resistencia: bounded(0, 6),
+      periculosidade: faixa(1, 5, 1), // P: dados que ela rola
+      letalidade: faixa(1, 3, 1),     // L: Dano ao acertar; também é o nível
+      resistencia: new SchemaField({  // R: Dano necessário para derrotá-la
+        value: faixa(0, 10, 1),
+        max: faixa(1, 10, 1)
+      }),
+      objetivo: texto(),
       habilidadeEspecial: new HTMLField({ required: true, blank: true }),
+      comoAge: texto(),
+      comoVencer: texto(),
       notas: new HTMLField({ required: true, blank: true })
     };
+  }
+
+  /** Converte fichas antigas (campo "perigo" 0–3, Resistência 0–6). */
+  static migrateData(source) {
+    if ("perigo" in source && !("periculosidade" in source)) {
+      source.periculosidade = Math.clamp(Number(source.perigo) || 1, 1, 5);
+    }
+    const r = source.resistencia;
+    if (r && "max" in r) r.max = Math.clamp(Number(r.max) || 1, 1, 10);
+    return super.migrateData(source);
   }
 }
 

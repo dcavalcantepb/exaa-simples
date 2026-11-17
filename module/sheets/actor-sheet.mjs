@@ -39,6 +39,12 @@ export class EXAAActorSheet extends ActorSheet {
     const sys = this.actor.system;
     context.system = sys;
 
+    if (this.actor.type === "ameaca") {
+      const escala = (n, atual) => Array.from({ length: n }, (_, i) => ({ value: i + 1, selected: i + 1 === atual }));
+      context.periculosidadeOptions = escala(5, sys.periculosidade);
+      context.letalidadeOptions = escala(3, sys.letalidade);
+      return context;
+    }
     if (this.actor.type !== "piloto") return context;
 
     context.atributos = CONFIG.EXAA.atributos;
@@ -209,14 +215,8 @@ export class EXAAActorSheet extends ActorSheet {
         updates["system.exapoints.value"] = Math.min(3, Math.max(0, 3 - newValue));
       }
 
+      // O despertar do Gene EXA (3 Marcas) é tratado em EXAAActor#_onUpdate
       await this.actor.update(updates);
-
-      if (field === "system.sindrome.value" && newValue >= this.actor.system.sindrome.max) {
-        ChatMessage.create({
-          content: "<p>Você desenvolveu a Síndrome, sua aventura chegou ao fim.</p>",
-          speaker: ChatMessage.getSpeaker({ actor: this.actor })
-        });
-      }
     });
   }
 

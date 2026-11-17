@@ -93,7 +93,7 @@ Hooks.once("init", () => {
     },
     ameaca: {
       bar: ["resistencia"],
-      value: ["perigo"]
+      value: ["periculosidade", "letalidade"]
     }
   };
 
@@ -111,56 +111,26 @@ Hooks.once("init", () => {
 });
 
 Hooks.on("renderChatMessage", (message, html) => {
-  html.find(".exaa-sobrecarga-btn:not([disabled])").on("click", async event => {
-    event.preventDefault();
-    const btn = event.currentTarget;
+  const root = html instanceof HTMLElement ? html : html[0];
+  const btn = root?.querySelector(".exaa-sobrecarga-btn:not([disabled])");
+  if (!btn) return;
+
+  // Só quem controla o Piloto e pode editar a mensagem ativa a Sobrecarga
+  const actor = game.actors.get(btn.dataset.actorId);
+  if (!actor?.isOwner || !message.isOwner) {
     btn.disabled = true;
+    btn.title = "Só o jogador do Piloto ou o Operador pode ativar a Sobrecarga.";
+    return;
+  }
 
-    const actorId = btn.dataset.actorId;
-    const actor = game.actors.get(actorId);
-    if (!actor?.isOwner) return;
-
-    const resultadosBase = JSON.parse(btn.dataset.resultadosBase || "[]");
-    const resultadosExa  = JSON.parse(btn.dataset.resultadosExa  || "[]");
-    const todosDados = [...resultadosBase, ...resultadosExa];
-    const minVal = Math.min(...todosDados);
-
-    const novosBase = [...resultadosBase];
-    const novosExa  = [...resultadosExa];
-    const baseIdx = novosBase.indexOf(minVal);
-    if (baseIdx !== -1) novosBase[baseIdx] = 6;
-    else { const ei = novosExa.indexOf(minVal); if (ei !== -1) novosExa[ei] = 6; }
-
-    const todosNovos = [...novosBase, ...novosExa];
-    const novoFinal = Math.max(...todosNovos);
-    const v = novoFinal;
-    const resultadoTexto = v <= 1 ? "Falha Crítica" : v <= 3 ? "Falha" : v <= 5 ? "Sucesso com Custo" : "Sucesso Crítico";
-
-    const novoEXA = Math.max(0, actor.system.exapoints.value - 1);
-    await actor.update({
-      "system.exapoints.value": novoEXA,
-      "system.sindrome.value": Math.min(3, 3 - novoEXA)
-    });
-
-    const messageId = btn.closest("[data-message-id]")?.dataset.messageId;
-    if (messageId) {
-      const msg = game.messages.get(messageId);
-      if (msg) {
-        const novoConteudo = msg.content.replace(
-          /<div class="exaa-sobrecarga-wrapper">[\s\S]*?<\/div>/,
-          '<div class="exaa-sobrecarga-wrapper"><button class="exaa-sobrecarga-btn exaa-sobrecarga-usada" disabled>✓ Sobrecarga ativada</button></div>'
-        );
-        await msg.update({ content: novoConteudo });
-      }
-    }
-
-    await ChatMessage.create({
-      speaker: ChatMessage.getSpeaker({ actor }),
-      content: `<div class="exaa-roll-msg">
-        <p>⚡ <strong>Sobrecarga EXACOM!</strong> Dado ${minVal} convertido em 6.</p>
-        <p class="exaa-resultado">Novo resultado: <strong>${resultadoTexto}</strong></p>
-        <p class="exaa-consequence">1 EXApoint consumido e 1 Marca adicionada.</p>
-      </div>`
-    });
+  btn.addEventListener("click", async event => {
+    event.preventDefault();
+    btn.disabled = true;
+    const ok = await actor.sobrecarga(
+      message,
+      JSON.parse(btn.dataset.resultadosBase || "[]"),
+      JSON.parse(btn.dataset.resultadosExa || "[]")
+    );
+    if (!ok) btn.disabled = false;
   });
 });

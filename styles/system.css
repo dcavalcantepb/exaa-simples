@@ -210,6 +210,15 @@
   color: #9B82BC;
 }
 
+.exaa .ameaca-nivel {
+  margin: 0;
+  color: #C4AEED;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 /* --- Track fields (EXApoints / Marcas / Ponto de Protagonismo) --- */
 .exaa .track-field {
   display: flex;

@@ -3,23 +3,44 @@
     <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
     <div class="header-fields">
       <input name="name" type="text" value="{{actor.name}}" placeholder="Nome da Ameaça" />
+      <p class="ameaca-nivel">Nível {{system.nivel}} · {{system.nivelLabel}}</p>
     </div>
   </header>
 
+  <section class="grid four-columns">
+    <label title="Periculosidade: quantos dados ela rola para ferir ou prejudicar os Pilotos.">
+      <span>P · Periculosidade</span>
+      <select name="system.periculosidade" data-dtype="Number">
+        {{#each periculosidadeOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/each}}
+      </select>
+    </label>
+    <label title="Letalidade: o Dano que causa ao acertar. Também é o seu nível.">
+      <span>L · Letalidade</span>
+      <select name="system.letalidade" data-dtype="Number">
+        {{#each letalidadeOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/each}}
+      </select>
+    </label>
+    <label title="Resistência: quanto Dano ainda falta para derrotá-la.">
+      <span>R · Atual</span>
+      <input name="system.resistencia.value" type="number" min="0" max="10" value="{{system.resistencia.value}}" />
+    </label>
+    <label title="Resistência inicial da Ameaça (1 a 10).">
+      <span>R · Máxima</span>
+      <input name="system.resistencia.max" type="number" min="1" max="10" value="{{system.resistencia.max}}" />
+    </label>
+  </section>
+
   <section class="grid one-column">
-    <div class="grid three-columns">
-      <label><span>Perigo</span><input name="system.perigo" type="number" value="{{system.perigo}}" /></label>
-      <label><span>Resistência Atual</span><input name="system.resistencia.value" type="number" value="{{system.resistencia.value}}" /></label>
-      <label><span>Resistência Máx</span><input name="system.resistencia.max" type="number" value="{{system.resistencia.max}}" /></label>
-    </div>
+    <section>
+      <h2>Descrição</h2>
+      {{editor system.notas target="system.notas" button=true owner=owner editable=editable}}
+    </section>
     <label><span>Objetivo</span><textarea name="system.objetivo">{{system.objetivo}}</textarea></label>
     <section>
       <h2>Habilidade Especial</h2>
       {{editor system.habilidadeEspecial target="system.habilidadeEspecial" button=true owner=owner editable=editable}}
     </section>
-    <section>
-      <h2>Notas</h2>
-      {{editor system.notas target="system.notas" button=true owner=owner editable=editable}}
-    </section>
+    <label><span>Como age</span><textarea name="system.comoAge">{{system.comoAge}}</textarea></label>
+    <label><span>Como vencer</span><textarea name="system.comoVencer">{{system.comoVencer}}</textarea></label>
   </section>
 </form>

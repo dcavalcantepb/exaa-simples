@@ -7,6 +7,7 @@ import {
 } from "./module/data-models.mjs";
 import { EXAAActorSheet } from "./module/sheets/actor-sheet.mjs";
 import { EXAAItemSheet } from "./module/sheets/item-sheet.mjs";
+import { registrarAcoesDoChat } from "./module/rolagem.mjs";
 
 Hooks.once("init", () => {
   CONFIG.EXAA = {
@@ -110,27 +111,4 @@ Hooks.once("init", () => {
   });
 });
 
-Hooks.on("renderChatMessage", (message, html) => {
-  const root = html instanceof HTMLElement ? html : html[0];
-  const btn = root?.querySelector(".exaa-sobrecarga-btn:not([disabled])");
-  if (!btn) return;
-
-  // Só quem controla o Piloto e pode editar a mensagem ativa a Sobrecarga
-  const actor = game.actors.get(btn.dataset.actorId);
-  if (!actor?.isOwner || !message.isOwner) {
-    btn.disabled = true;
-    btn.title = "Só o jogador do Piloto ou o Operador pode ativar a Sobrecarga.";
-    return;
-  }
-
-  btn.addEventListener("click", async event => {
-    event.preventDefault();
-    btn.disabled = true;
-    const ok = await actor.sobrecarga(
-      message,
-      JSON.parse(btn.dataset.resultadosBase || "[]"),
-      JSON.parse(btn.dataset.resultadosExa || "[]")
-    );
-    if (!ok) btn.disabled = false;
-  });
-});
+registrarAcoesDoChat();

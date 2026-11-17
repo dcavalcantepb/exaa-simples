@@ -90,9 +90,26 @@
   padding: 3px 6px;
 }
 
-.exaa select option {
+/* Listas suspensas: tema escuro no menu nativo e destaque com contraste alto */
+.exaa select,
+.exaa-dialog-form select {
+  color-scheme: dark;
+}
+
+.exaa select option,
+.exaa-dialog-form select option {
   background: #1D1340;
   color: #E8DEFF;
+}
+
+.exaa select option:hover,
+.exaa select option:focus,
+.exaa select option:checked,
+.exaa-dialog-form select option:hover,
+.exaa-dialog-form select option:focus,
+.exaa-dialog-form select option:checked {
+  background: #7D29F2;
+  color: #FFFFFF;
 }
 
 .exaa input:not([type="checkbox"]):not([name="name"]):focus,
@@ -633,7 +650,7 @@
 .exaa .equipamento-header,
 .exaa .equipamento-row {
   display: grid;
-  grid-template-columns: 20px 2fr 1fr 1fr;
+  grid-template-columns: 26px 2fr 1fr 1fr;
   gap: 8px;
   align-items: center;
 }
@@ -654,7 +671,7 @@
 
 .exaa .equipamento-total {
   display: grid;
-  grid-template-columns: 20px 2fr 1fr 1fr;
+  grid-template-columns: 26px 2fr 1fr 1fr;
   gap: 8px;
   align-items: center;
   border-top: 1px solid #6C32A666;
@@ -851,3 +868,91 @@
   font-size: 0.8rem;
   font-style: italic;
 }
+/* ============================================================
+   Combate: botões de ataque e ações do chat
+   ============================================================ */
+.modulo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 34px;
+}
+
+.modulo-header .roll-btn { width: 22px; height: 22px; font-size: 0.8rem; }
+
+.exaa .ameaca-linha {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.exaa .ameaca-ataque-btn {
+  width: auto;
+  flex: 0 0 auto;
+  padding: 4px 12px;
+  background: #7A0016;
+  color: #FFB8C4;
+  border: 2px solid #AA2040;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.exaa .ameaca-ataque-btn:hover { background: #9A001C; border-color: #CC2244; }
+
+.exaa-dano {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #FFB8C4;
+  margin-top: 2px !important;
+}
+
+.exaa-acoes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.exaa-acao-btn {
+  display: block;
+  width: 100%;
+  padding: 5px 10px;
+  background: #381659;
+  color: #E8DEFF;
+  border: 2px solid #7D29F2;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  line-height: 1.3;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.exaa-acao-btn:hover:not(:disabled) { background: #6C32A6; border-color: #9B5FE0; }
+
+.exaa-acao-btn.exaa-usado,
+.exaa-acao-btn:disabled {
+  background: #150B20;
+  border-color: #4A3060;
+  color: #9B82BC;
+  cursor: not-allowed;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.exaa-acao-btn.exaa-sobrecarga-btn:not(:disabled) {
+  background: #7A0016;
+  color: #FFB8C4;
+  border-color: #AA2040;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.exaa-acao-btn.exaa-sobrecarga-btn:hover:not(:disabled) { background: #9A001C; border-color: #CC2244; }

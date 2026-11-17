@@ -3,7 +3,10 @@
     <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
     <div class="header-fields">
       <input name="name" type="text" value="{{actor.name}}" placeholder="Nome da Ameaça" />
-      <p class="ameaca-nivel">Nível {{system.nivel}} · {{system.nivelLabel}}</p>
+      <div class="ameaca-linha">
+        <p class="ameaca-nivel">Nível {{system.nivel}} · {{system.nivelLabel}}</p>
+        <button type="button" class="ameaca-ataque-btn" data-ataque-ameaca title="Rola P dados e causa Dano igual à Letalidade">⚔ Atacar</button>
+      </div>
     </div>
   </header>
 

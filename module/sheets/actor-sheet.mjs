@@ -95,6 +95,7 @@ export class EXAAActorSheet extends ActorSheet {
         porte: porteVal,
         index: i,
         numero: i + 1,
+        arma: ["arma-fogo", "arma-branca"].includes(tipoVal) && porteVal > 0,
         tipoOptions:  TIPO_OPTIONS.map(o => ({ ...o, selected: o.value === tipoVal })),
         porteOptions: PORTE_OPTIONS.map(o => ({ ...o, selected: o.value === porteVal }))
       };
@@ -138,6 +139,8 @@ export class EXAAActorSheet extends ActorSheet {
     context.armaSecundariaPorteOptions = opt(PORTE_MODULO,      as_.porte     ?? "");
     context.suporteCategoriaOptions    = opt(CATEGORIA_SUPORTE, sup.categoria ?? "");
     context.blindagemPorteOptions      = opt(PORTE_MODULO,      bl.porte      ?? "");
+    context.armaPrimariaPronta   = !!(ap.tipo && ap.porte);
+    context.armaSecundariaPronta = !!(as_.tipo && as_.porte);
 
     // Defeitos
     const defAtual  = sys.defeito  ?? "";
@@ -183,9 +186,26 @@ export class EXAAActorSheet extends ActorSheet {
       const habilidade = event.currentTarget.dataset.rollSkill;
       const habilidadeLabel = CONFIG.EXAA.habilidades[habilidade] ?? habilidade;
       const atributo = CONFIG.EXAA.habilidadeAtributo[habilidade];
-      const params = await this._abrirDialogoTeste(habilidadeLabel);
+      const params = await this._abrirDialogoTeste(`Teste: ${habilidadeLabel}`);
       if (!params) return;
       this.actor.rolarTeste({ habilidade, atributo, modificador: params.modificador, exapoints: params.exapoints });
+    });
+
+    html.find("[data-ataque]").on("click", async event => {
+      const arma = this.actor.arma(event.currentTarget.dataset.ataque);
+      if (!arma?.porte || !["arma-fogo", "arma-branca"].includes(arma.tipo)) {
+        ui.notifications.warn("Defina o tipo e o Porte da arma antes de atacar.");
+        return;
+      }
+      const params = await this._abrirDialogoTeste(`Ataque: ${arma.nome || "Arma"}`, { ataque: true });
+      if (!params) return;
+      this.actor.rolarAtaque(arma, params);
+    });
+
+    html.find("[data-ataque-ameaca]").on("click", async () => {
+      const params = await this._abrirDialogoTeste(`Ataque: ${this.actor.name}`, { ataque: true });
+      if (!params) return;
+      this.actor.rolarAtaqueAmeaca(params);
     });
 
     html.find(".stepper-btn").on("click", async event => {
@@ -220,38 +240,53 @@ export class EXAAActorSheet extends ActorSheet {
     });
   }
 
-  async _abrirDialogoTeste(habilidadeLabel) {
+  /**
+   * Diálogo de Teste/Ataque.
+   * @param {string} titulo
+   * @param {object} [opcoes]
+   * @param {boolean} [opcoes.ataque]  mostra os alvos marcados
+   */
+  async _abrirDialogoTeste(titulo, { ataque = false } = {}) {
+    const piloto = this.actor.type === "piloto";
     const modOptions = [-3, -2, -1, 0, 1, 2, 3]
       .map(v => `<option value="${v}"${v === 0 ? " selected" : ""}>${v > 0 ? "+" + v : v}</option>`)
       .join("");
 
-    const maxEXA = this.actor.system.exapoints?.value ?? 0;
+    const maxEXA = piloto ? (this.actor.system.exapoints?.value ?? 0) : 0;
     const exaOptions = Array.from({ length: maxEXA + 1 }, (_, i) =>
       `<option value="${i}"${i === 0 ? " selected" : ""}>${i}</option>`
     ).join("");
+    const exaCampo = piloto ? `
+            <div class="form-group">
+              <label>EXApoints (disponíveis: ${maxEXA})</label>
+              <select name="exapoints">${exaOptions}</select>
+            </div>` : "";
 
-    const exacomAtivo = this.actor.system.exacom?.ativo ?? false;
-    const nucleo = this.actor.system.exacom?.nucleo ?? "nenhum";
-    const nucleoLabel = CONFIG.EXAA.nucleos[nucleo] ?? "Nenhum";
-    const exacomInfo = exacomAtivo && nucleo !== "nenhum"
-      ? `<p class="exaa-dialog-section-title exaa-exacom-ativo">⚡ EXACOM Ativo — Núcleo: ${nucleoLabel}</p>`
-      : `<p class="exaa-dialog-section-title">EXACOM inativo</p>`;
+    const infos = [];
+    if (piloto) {
+      const nucleoLabel = CONFIG.EXAA.nucleos[this.actor.system.exacom?.nucleo] ?? "Nenhum";
+      infos.push(this.actor.noEXACOM
+        ? `<p class="exaa-dialog-section-title exaa-exacom-ativo">⚡ EXACOM Ativo — Núcleo: ${nucleoLabel}</p>`
+        : `<p class="exaa-dialog-section-title">EXACOM inativo</p>`);
+    }
+    if (ataque) {
+      const alvos = Array.from(game.user.targets).map(t => t.name);
+      infos.push(alvos.length
+        ? `<p class="exaa-dialog-section-title exaa-exacom-ativo">🎯 Alvo: ${alvos.join(", ")}</p>`
+        : `<p class="exaa-dialog-section-title">Nenhum alvo marcado</p>`);
+    }
 
     return new Promise(resolve => {
       new Dialog({
-        title: `Teste: ${habilidadeLabel}`,
+        title: titulo,
         content: `
           <form class="exaa-dialog-form">
             <div class="form-group">
               <label>Modificador</label>
               <select name="modificador">${modOptions}</select>
-            </div>
-            <div class="form-group">
-              <label>EXApoints (disponíveis: ${maxEXA})</label>
-              <select name="exapoints">${exaOptions}</select>
-            </div>
+            </div>${exaCampo}
             <hr class="exaa-dialog-divider" />
-            ${exacomInfo}
+            ${infos.join("")}
           </form>
         `,
         buttons: {
@@ -260,7 +295,7 @@ export class EXAAActorSheet extends ActorSheet {
             label: "Rolar",
             callback: html => resolve({
               modificador: Number(html.find("[name='modificador']").val()),
-              exapoints: Number(html.find("[name='exapoints']").val())
+              exapoints: Number(html.find("[name='exapoints']").val() ?? 0)
             })
           },
           cancel: {

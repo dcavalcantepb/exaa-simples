@@ -132,7 +132,11 @@
           </div>
           {{#each equipamentosLista}}
             <div class="equipamento-row">
-              <span>{{numero}}</span>
+              {{#if arma}}
+                <button type="button" class="roll-btn" data-ataque="equip:{{index}}" title="Atacar com {{nome}}">⚔</button>
+              {{else}}
+                <span>{{numero}}</span>
+              {{/if}}
               <input name="system.equipamentos.{{index}}.nome" type="text" value="{{nome}}" />
               <select name="system.equipamentos.{{index}}.tipo">
                 {{#each tipoOptions}}
@@ -194,7 +198,9 @@
         <div class="modulos-grid">
 
           <div class="modulo-card">
-            <div class="modulo-header">Arma Primária</div>
+            <div class="modulo-header">Arma Primária
+              {{#if armaPrimariaPronta}}<button type="button" class="roll-btn" data-ataque="modulo:armaPrimaria" title="Atacar com a Arma Primária">⚔</button>{{/if}}
+            </div>
             <div class="modulo-body">
               <label><span>Nome</span><input name="system.exacom.modulos.armaPrimaria.nome" type="text" value="{{system.exacom.modulos.armaPrimaria.nome}}" /></label>
               <label>
@@ -213,7 +219,9 @@
           </div>
 
           <div class="modulo-card">
-            <div class="modulo-header">Arma Secundária</div>
+            <div class="modulo-header">Arma Secundária
+              {{#if armaSecundariaPronta}}<button type="button" class="roll-btn" data-ataque="modulo:armaSecundaria" title="Atacar com a Arma Secundária">⚔</button>{{/if}}
+            </div>
             <div class="modulo-body">
               <label><span>Nome</span><input name="system.exacom.modulos.armaSecundaria.nome" type="text" value="{{system.exacom.modulos.armaSecundaria.nome}}" /></label>
               <label>

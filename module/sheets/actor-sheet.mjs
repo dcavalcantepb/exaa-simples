@@ -1,3 +1,5 @@
+import { ecgSVG, statusHTML, manchaHTML, ICONES } from "../vitais.mjs";
+
 const DEFEITOS = [
   { value: "",           label: "Nenhum",     desc: "" },
   { value: "assombrado", label: "Assombrado", desc: "O passado te persegue." },
@@ -68,6 +70,21 @@ export class EXAAActorSheet extends ActorSheet {
     }));
     context.condicaoPiloto = this.actor.condicaoPiloto;
     context.condicaoEXACOM = this.actor.condicaoEXACOM;
+
+    // Sinais vitais: monitor do Piloto, barra do EXACOM e botões de Morto / Destruído
+    context.nivelPiloto = this.actor.nivelVitalPiloto;
+    context.nivelEXACOM = this.actor.nivelVitalEXACOM;
+    context.ecgPiloto = ecgSVG(context.nivelPiloto);
+    context.statusEXACOM = statusHTML(context.nivelEXACOM);
+    context.morto = !!sys.dano.piloto.morto;
+    context.destruido = !!sys.dano.exacom.destruido;
+    context.iconeCaveira = ICONES.caveira;
+    context.iconeX = ICONES.x;
+
+    // Mancha da Síndrome: desenha no nível que estava na tela e anima até o atual (ver activateListeners)
+    context.mancha = manchaHTML();
+    context.marcasAtuais = sys.sindrome.value;
+    context.marcasNaTela = this._marcasNaTela ?? sys.sindrome.value;
     context.exapointsBoxes = Array.from({ length: 3 }, (_, i) => i < this.actor.system.exapoints.value);
     context.sindromeBoxes = Array.from({ length: 3 }, (_, i) => i < this.actor.system.sindrome.value);
     context.protagonismoChecked = this.actor.system.protagonismo >= 1;
@@ -175,7 +192,18 @@ export class EXAAActorSheet extends ActorSheet {
 
   activateListeners(html) {
     super.activateListeners(html);
+    this._animarMancha(html);
     if (!this.isEditable) return;
+
+    // Morto / Destruído: liga e desliga; ao ligar, o Dano vai para 3
+    html.find("[data-morte]").on("click", async event => {
+      const trilha = event.currentTarget.dataset.morte;
+      const campo = `system.dano.${trilha}.${trilha === "piloto" ? "morto" : "destruido"}`;
+      const ligar = !foundry.utils.getProperty(this.actor, campo);
+      const updates = { [campo]: ligar };
+      if (ligar) updates[`system.dano.${trilha}.value`] = 3;
+      await this.actor.update(updates);
+    });
 
     html.find("[data-roll-exa]").on("click", async () => {
       const maxEXA = this.actor.system.exapoints?.value ?? 0;
@@ -389,6 +417,22 @@ export class EXAAActorSheet extends ActorSheet {
         close: () => resolve(null)
       }).render(true);
     });
+  }
+
+  /**
+   * A ficha é redesenhada a cada alteração. Para a mancha avançar (ou recuar) em vez de pular,
+   * ela nasce no nível que estava na tela e, no quadro seguinte, recebe o nível atual.
+   */
+  _animarMancha(html) {
+    const retrato = html.find(".exaa-retrato")[0];
+    if (!retrato) return;
+    const alvo = Number(retrato.dataset.marcas) || 0;
+    this._marcasNaTela = alvo;
+    if (retrato.classList.contains(`marcas-${alvo}`)) return;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      retrato.classList.remove("marcas-0", "marcas-1", "marcas-2", "marcas-3");
+      retrato.classList.add(`marcas-${alvo}`);
+    }));
   }
 
   /** Escolha do Plot Twist ao gastar o Ponto de Protagonismo. */

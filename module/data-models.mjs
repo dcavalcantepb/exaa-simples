@@ -7,10 +7,11 @@ const {
   StringField
 } = foundry.data.fields;
 
-const bounded = (initial, max) => new SchemaField({
+const boundedFields = (initial, max) => ({
   value: new NumberField({ required: true, integer: true, min: 0, max, initial }),
   max: new NumberField({ required: true, integer: true, min: 0, initial: max })
 });
+const bounded = (initial, max) => new SchemaField(boundedFields(initial, max));
 
 const score = (initial, max = 3) => new SchemaField({
   value: new NumberField({ required: true, integer: true, min: 0, max, initial })
@@ -42,9 +43,16 @@ export class PilotoDataModel extends foundry.abstract.TypeDataModel {
       exapoints: bounded(3, 3),
       sindrome: bounded(0, 3),
       protagonismo: new NumberField({ required: true, integer: true, min: 0, max: 1, initial: 0 }),
+      // A escala de Dano continua 0–3; Morto e Destruído são marcações à parte, ligadas pelo Operador
       dano: new SchemaField({
-        piloto: bounded(0, 3),
-        exacom: bounded(0, 3)
+        piloto: new SchemaField({
+          ...boundedFields(0, 3),
+          morto: new BooleanField({ required: true, initial: false })
+        }),
+        exacom: new SchemaField({
+          ...boundedFields(0, 3),
+          destruido: new BooleanField({ required: true, initial: false })
+        })
       }),
       carga: new StringField({ required: true, initial: "medio" }),
       equipamentos: new ArrayField(

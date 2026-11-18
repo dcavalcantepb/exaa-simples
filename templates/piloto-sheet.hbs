@@ -1,6 +1,9 @@
 <form class="{{cssClass}}" autocomplete="off">
   <header class="sheet-header">
-    <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+    <div class="exaa-retrato marcas-{{marcasNaTela}}" data-marcas="{{marcasAtuais}}">
+      <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" />
+      <div class="sindrome">{{{mancha}}}</div>
+    </div>
     <div class="header-fields">
       <input name="name" type="text" value="{{actor.name}}" placeholder="Nome do Piloto" />
       <div class="grid three-columns">
@@ -80,12 +83,14 @@
 
       <section class="secao-condicao">
         <h2>Condição</h2>
-        <div class="dano-field dano-cor-{{system.dano.piloto.value}}">
+        <div class="dano-field dano-cor-{{nivelPiloto}}">
           <span class="dano-label-text">Piloto — {{condicaoPiloto}}</span>
+          {{{ecgPiloto}}}
           <div class="stepper">
             <button type="button" class="stepper-btn" data-action="minus" data-field="system.dano.piloto.value" data-max="3">−</button>
             <span class="stepper-val">{{system.dano.piloto.value}}</span>
             <button type="button" class="stepper-btn" data-action="plus" data-field="system.dano.piloto.value" data-max="3">+</button>
+            <button type="button" class="botao-morte{{#if morto}} ativo{{/if}}" data-morte="piloto" title="Morto">{{{iconeCaveira}}}</button>
           </div>
         </div>
       </section>
@@ -186,12 +191,14 @@
 
       <section class="secao-condicao">
         <h2>Condição</h2>
-        <div class="dano-field dano-cor-{{system.dano.exacom.value}}">
+        <div class="dano-field dano-cor-{{nivelEXACOM}}">
           <span class="dano-label-text">EXACOM — {{condicaoEXACOM}}</span>
+          {{{statusEXACOM}}}
           <div class="stepper">
             <button type="button" class="stepper-btn" data-action="minus" data-field="system.dano.exacom.value" data-max="3">−</button>
             <span class="stepper-val">{{system.dano.exacom.value}}</span>
             <button type="button" class="stepper-btn" data-action="plus" data-field="system.dano.exacom.value" data-max="3">+</button>
+            <button type="button" class="botao-morte{{#if destruido}} ativo{{/if}}" data-morte="exacom" title="Destruído">{{{iconeX}}}</button>
           </div>
         </div>
       </section>

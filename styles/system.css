@@ -1081,3 +1081,265 @@
   color: #5E4E7E;
   background: #120B26;
 }
+
+/* ============================================================
+   Sinais vitais: monitor do Piloto, barra do EXACOM e mancha da Síndrome
+   (vindo de laboratorio-vitais/vitais.css)
+   ============================================================ */
+/* ---------------- Eletrocardiograma ---------------- */
+.exaa-ecg {
+  flex: 1;
+  min-width: 90px;
+  height: 30px;
+  margin: 0 10px;
+  border: 1px solid #1E3A2C;
+  border-radius: 3px;
+  background-color: #040A08;
+  /* Quadriculado discreto de monitor */
+  background-image:
+    linear-gradient(rgba(61, 214, 140, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(61, 214, 140, 0.07) 1px, transparent 1px);
+  background-size: 10px 10px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-right: 8px;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--ecg-cor);
+  --ecg-cor: #3DD68C;
+}
+
+/* Leitura ao lado do traço (monitor do Piloto e barra do EXACOM) */
+.exaa .vital-num { min-width: 34px; text-align: right; white-space: nowrap; }
+.exaa .vital-num small { font-size: 0.85em; opacity: 0.6; }
+.exaa .vital-estado { min-width: 66px; text-align: right; text-shadow: 0 0 4px currentColor; }
+
+.exaa-ecg.ecg-n1 { --ecg-cor: #E8C030; }
+.exaa-ecg.ecg-n2 { --ecg-cor: #F07030; }
+.exaa-ecg.ecg-n3 { --ecg-cor: #FF3355; border-color: #3A1220; }
+.exaa-ecg.ecg-n4 { --ecg-cor: #CC2244; border-color: #6A1024; }
+
+/* A máscara tem o dobro da largura do monitor: a ponta fica no meio dela, com o rastro se apagando à esquerda */
+.exaa-ecg .ecg-traco {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  filter: drop-shadow(0 0 2px var(--ecg-cor));
+  -webkit-mask-image: linear-gradient(90deg, transparent 28%, rgba(0, 0, 0, 0.3) 42%, #000 49.4%, transparent 50%);
+  mask-image: linear-gradient(90deg, transparent 28%, rgba(0, 0, 0, 0.3) 42%, #000 49.4%, transparent 50%);
+  -webkit-mask-size: 200% 100%;
+  mask-size: 200% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  animation: exaa-ecg-varre var(--ecg-tempo, 2.6s) linear infinite;
+}
+
+.exaa-ecg path {
+  fill: none;
+  stroke: var(--ecg-cor);
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+@keyframes exaa-ecg-varre {
+  from { -webkit-mask-position: 100% 0; mask-position: 100% 0; }
+  to   { -webkit-mask-position: 0% 0;   mask-position: 0% 0; }
+}
+
+/* Estado crítico: a borda pisca, como um alarme */
+.exaa-ecg.ecg-n3 { animation: exaa-ecg-alarme 0.6s steps(2, jump-none) infinite; }
+@keyframes exaa-ecg-alarme {
+  from { border-color: #3A1220; }
+  to   { border-color: #FF3355; }
+}
+
+/* ---------------- Status do Sistema (EXACOM) ---------------- */
+.exaa-sys {
+  flex: 1;
+  min-width: 90px;
+  height: 30px;
+  margin: 0 10px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  border: 1px solid #1E2A3A;
+  border-radius: 3px;
+  background: #04070C;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--sys-cor);
+  --sys-cor: #3DD68C;
+}
+
+.exaa-sys.sys-n1 { --sys-cor: #E8C030; }
+.exaa-sys.sys-n2 { --sys-cor: #F07030; }
+.exaa-sys.sys-n3 { --sys-cor: #FF3355; }
+.exaa-sys.sys-n4 { --sys-cor: #CC2244; border-color: #6A1024; }
+
+.exaa-sys .sys-rotulo { opacity: 0.6; }
+
+.exaa-sys .sys-barra {
+  flex: 1;
+  display: flex;
+  gap: 2px;
+  height: 12px;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.exaa-sys .sys-seg { flex: 1; border-radius: 1px; background: #121C26; }
+.exaa-sys .sys-seg.on { background: var(--sys-cor); box-shadow: 0 0 4px var(--sys-cor); }
+
+/* Varredura de diagnóstico: o modo "overlay" faz o brilho aparecer só nos segmentos acesos */
+.exaa-sys .sys-barra::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: overlay;
+  background: linear-gradient(90deg, transparent 40%, rgba(255, 255, 255, 0.85) 50%, transparent 60%);
+  background-size: 250% 100%;
+  animation: exaa-sys-varre 2.8s linear infinite;
+}
+@keyframes exaa-sys-varre {
+  from { background-position: 100% 0; }
+  to   { background-position: -50% 0; }
+}
+
+/* Falha: segmentos acesos falhando em tempos diferentes */
+.sys-n2 .sys-seg.on { animation: exaa-sys-falha 1.7s steps(1, end) infinite; }
+.sys-n2 .sys-seg.on:nth-child(2) { animation-delay: -0.6s; }
+.sys-n2 .sys-seg.on:nth-child(3) { animation-duration: 1.1s; animation-delay: -0.3s; }
+.sys-n2 .sys-seg.on:nth-child(4) { animation-duration: 2.3s; }
+@keyframes exaa-sys-falha {
+  0%, 82%  { opacity: 1; }
+  83%, 90% { opacity: 0.15; }
+  91%      { opacity: 1; }
+}
+
+/* Crítico: o último segmento pisca e a barra treme */
+.sys-n3 .sys-seg.on { animation: exaa-sys-pisca 0.5s steps(2, jump-none) infinite; }
+.sys-n3 .sys-barra { animation: exaa-sys-treme 0.35s steps(3) infinite; }
+.sys-n3 .sys-barra::after,
+.sys-n4 .sys-barra::after { display: none; }
+@keyframes exaa-sys-pisca {
+  from { opacity: 1; }
+  to   { opacity: 0.1; }
+}
+@keyframes exaa-sys-treme {
+  0%   { transform: translateX(0); }
+  33%  { transform: translateX(-1px); }
+  66%  { transform: translateX(1px); }
+  100% { transform: translateX(0); }
+}
+
+/* ---------------- Botão de morte (ao lado do contador) ---------------- */
+.exaa .botao-morte {
+  width: 24px;
+  height: 22px;
+  padding: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  border: 1px solid #5A1A2A;
+  background: #1A0810;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.15s, background 0.15s, border-color 0.15s;
+}
+.exaa .botao-morte:hover { opacity: 1; border-color: #CC2244; }
+.exaa .botao-morte.ativo { opacity: 1; background: #4A0A18; border-color: #FF3355; box-shadow: 0 0 6px #CC2244; }
+.exaa .botao-morte .icone-morte { width: 16px; height: 16px; }
+.exaa .botao-morte .icone-morte .osso { fill: #E85070; }
+.exaa .botao-morte .icone-morte .vazio { fill: #1A0810; }
+.exaa .botao-morte.ativo .icone-morte .vazio { fill: #4A0A18; }
+.exaa .botao-morte .icone-morte path:only-child { fill: none; stroke: #E85070; stroke-width: 3.2; stroke-linecap: round; }
+
+/* ---------------- Retrato e a Síndrome ---------------- */
+.exaa-retrato {
+  position: relative;
+  flex-shrink: 0;
+  width: 104px;
+  height: 104px;
+  border-radius: 4px;
+  overflow: hidden;
+  --mancha-raio: 80%;
+  transition: --mancha-raio 1.8s ease-in-out;
+}
+
+.exaa-retrato .profile-img {
+  display: block;
+  transition: filter 1.2s ease;
+}
+
+/* Camadas da mancha: sempre por cima da foto e sem roubar o clique */
+.exaa-retrato .sindrome > * {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* ===== Mancha da Síndrome ===== */
+
+/* O raio livre no centro encolhe a cada Marca; registrado para poder animar */
+@property --mancha-raio {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 80%;
+}
+
+.exaa-retrato.marcas-1 { --mancha-raio: 52%; }
+.exaa-retrato.marcas-2 { --mancha-raio: 34%; }
+.exaa-retrato.marcas-3 { --mancha-raio: 12%; }
+
+/* A borda da mancha é distorcida por ruído animado (filtro SVG #exaa-fumaca) */
+.exaa-retrato .mancha-wrap { filter: url(#exaa-fumaca); inset: -8px; }
+.exaa-retrato .mancha {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 70%, rgba(160, 64, 255, 0.55), transparent 45%),
+    radial-gradient(circle at 75% 25%, rgba(120, 30, 220, 0.5), transparent 50%),
+    #24004A;
+  opacity: 0.88;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent var(--mancha-raio), #000 calc(var(--mancha-raio) + 22%));
+  mask-image: radial-gradient(circle at 50% 50%, transparent var(--mancha-raio), #000 calc(var(--mancha-raio) + 22%));
+}
+.exaa-retrato.marcas-3 .mancha { animation: exaa-mancha-pulso 1.4s ease-in-out infinite; }
+@keyframes exaa-mancha-pulso {
+  0%, 100% { opacity: 0.8; }
+  50%      { opacity: 0.95; }
+}
+.exaa-retrato.marcas-3 .profile-img { filter: saturate(0.5) brightness(0.85); }
+
+/* ---------------- Quem prefere menos movimento ---------------- */
+@media (prefers-reduced-motion: reduce) {
+  .exaa-ecg .ecg-traco,
+  .exaa-ecg,
+  .exaa-sys .sys-seg,
+  .exaa-sys .sys-barra,
+  .exaa-sys .sys-barra::after,
+  .exaa-retrato .mancha { animation: none !important; }
+  .exaa-ecg .ecg-traco { -webkit-mask-image: none; mask-image: none; }
+  .exaa-retrato { transition: none; }
+}
+
+/* ---------------- Ajustes da ficha real ---------------- */
+.exaa .dano-field .dano-label-text { min-width: 170px; }
+.dano-cor-4 { border-color: #6A1024; background: #12060A; }
+.dano-cor-4 .dano-label-text { color: #CC2244; }
+.exaa-retrato .profile-img { box-sizing: border-box; }
+/* Sem Marcas, a mancha nem é desenhada (o filtro de fumaça é a parte mais pesada) */
+.exaa-retrato.marcas-0 .mancha-wrap { display: none; }

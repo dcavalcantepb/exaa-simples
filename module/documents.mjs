@@ -81,11 +81,22 @@ export class EXAAActor extends Actor {
   }
 
   get condicaoPiloto() {
+    if (this.system.dano?.piloto?.morto) return "Morto";
     return EXAAActor.condicaoPorDano(this.system.dano?.piloto?.value ?? 0, false);
   }
 
   get condicaoEXACOM() {
+    if (this.system.dano?.exacom?.destruido) return "Destruído";
     return EXAAActor.condicaoPorDano(this.system.dano?.exacom?.value ?? 0, true);
+  }
+
+  /** Nível para os sinais vitais da ficha: o Dano (0–3), ou 4 se Morto / Destruído. */
+  get nivelVitalPiloto() {
+    return this.system.dano?.piloto?.morto ? 4 : (this.system.dano?.piloto?.value ?? 0);
+  }
+
+  get nivelVitalEXACOM() {
+    return this.system.dano?.exacom?.destruido ? 4 : (this.system.dano?.exacom?.value ?? 0);
   }
 
   static condicaoPorDano(dano, exacom) {

@@ -1,5 +1,5 @@
 import {
-  PORTE_NUM, rolarParada, somarDadoEXA, htmlParada, resultadoTeste, danoDoGolpe, textoDoGolpe,
+  PORTE_NUM, LIMITE_DADOS, rolarParada, somarDadoEXA, cabeMaisUm, htmlParada, resultadoTeste, danoDoGolpe, textoDoGolpe,
   capturarAlvos, botao, botoesAplicar, botoesContra, acoes, marcarUsado
 } from "./rolagem.mjs";
 
@@ -176,7 +176,7 @@ export class EXAAActor extends Actor {
         <p class="exaa-resultado">Novo resultado: <strong>Sucesso Crítico</strong></p>`;
     if (ataque) {
       const dano = danoDoGolpe(6, todos, ataque.porte);
-      content += `<p class="exaa-dano">${textoDoGolpe(6, dano, ataque.porte)}</p>
+      content += `<p class="exaa-dano">${textoDoGolpe(6, dano, ataque.porte, todos)}</p>
         ${acoes(botoesAplicar(dano, ataque.alvos, `${this.name} (${ataque.arma})`))}`;
     }
     content += `<p class="exaa-consequence">1 EXApoint consumido e 1 Marca adicionada.</p></div>`;
@@ -211,10 +211,12 @@ export class EXAAActor extends Actor {
     const penalidade = sys.sindrome?.value ?? 0;
     const mod = Number(modificador) || 0;
     const ajudantes = Math.clamp(Number(ajuda) || 0, 0, 2);
+    // Ajuda é uma vantagem como outra qualquer: somadas, as vantagens não passam de +3
+    const externo = Math.min(3, mod + ajudantes);
     const { tipo: tipoEXACOM } = this.bonusNucleo(atributo);
     const dadosEXA = Math.max(0, Number(exapoints) || 0);
 
-    const p = await rolarParada(this.paradaDe(atributo, habilidade) + mod + ajudantes, dadosEXA);
+    const p = await rolarParada(this.paradaDe(atributo, habilidade) + externo, dadosEXA);
 
     const labelAtributo = CONFIG.EXAA.atributos[atributo] ?? atributo;
     const labelHabilidade = CONFIG.EXAA.habilidades[habilidade] ?? habilidade;
@@ -222,10 +224,15 @@ export class EXAAActor extends Actor {
     let detalhe = `${labelAtributo} (${valorAtributo}) + ${labelHabilidade} (${valorHabilidade})`;
     if (ajudantes > 0) detalhe += ` + Ajuda (+${ajudantes})`;
     if (mod !== 0) detalhe += ` + Mod (${mod > 0 ? "+" : ""}${mod})`;
+    if (externo < mod + ajudantes) detalhe += ` (vantagens limitadas a +3)`;
     if (penalidade > 0) detalhe += ` − Marcas (${penalidade})`;
     if (tipoEXACOM) detalhe += ` + EXACOM (${tipoEXACOM})`;
     detalhe += p.usaPior ? " = sem dados: 2d6, fica o menor" : ` = ${p.numBase}d6`;
-    if (dadosEXA > 0) detalhe += ` + ${dadosEXA}d6 EXA`;
+    if (p.exa.length > 0) detalhe += ` + ${p.exa.length}d6 EXA`;
+    if (p.cortados > 0) detalhe += ` (limite de ${LIMITE_DADOS} dados)`;
+    if (p.exaFora > 0) {
+      detalhe += ` · ${p.exaFora} EXApoint${p.exaFora > 1 ? "s" : ""} não ${p.exaFora > 1 ? "couberam" : "coube"} na mão e não ${p.exaFora > 1 ? "foram gastos" : "foi gasto"}`;
+    }
 
     const alvos = ataque ? capturarAlvos() : [];
     const cabecalho = ataque
@@ -260,7 +267,7 @@ export class EXAAActor extends Actor {
     let botoes = "";
     if (ataque) {
       const dano = danoDoGolpe(p.final, p.todos, ataque.porte);
-      content += `<p class="exaa-dano">${textoDoGolpe(p.final, dano, ataque.porte)}</p>`;
+      content += `<p class="exaa-dano">${textoDoGolpe(p.final, dano, ataque.porte, p.todos)}</p>`;
       botoes += botoesAplicar(dano, ataque.alvos, `${this.name} (${ataque.arma})`);
       if (p.final <= 1) botoes += botoesContra(this, ataque.alvos);
     }
@@ -271,7 +278,7 @@ export class EXAAActor extends Actor {
     }
 
     // EXApoints valem a qualquer momento; num Teste comum, depois de um 6 não há o que melhorar
-    if (exaLivres > 0 && (p.final < 6 || ataque)) {
+    if (exaLivres > 0 && cabeMaisUm(p) && (p.final < 6 || ataque)) {
       botoes += botao("exa", `+1 EXApoint (livres: ${exaLivres})`, {
         ator: this.uuid, teste, parada: { usaPior: p.usaPior, numBase: p.numBase, base: p.base, exa: p.exa }
       }, "exaa-exa-btn");
@@ -307,6 +314,10 @@ export class EXAAActor extends Actor {
     const livres = (this.system.exapoints?.value ?? 0) - anterior.exa.filter(r => r !== 1).length;
     if (livres <= 0) {
       ui.notifications.warn(`${this.name} não tem EXApoints livres para somar a este Teste.`);
+      return false;
+    }
+    if (!cabeMaisUm(anterior)) {
+      ui.notifications.warn(`A mão já tem ${LIMITE_DADOS} dados.`);
       return false;
     }
 
@@ -431,7 +442,7 @@ export class EXAAActor extends Actor {
         <p class="exaa-detalhe">${detalhe}</p>
         ${htmlParada(p)}
         <p class="exaa-resultado">Resultado: <strong>${resultadoTeste(p.final)}</strong></p>
-        <p class="exaa-dano">${textoDoGolpe(p.final, dano, L)}</p>
+        <p class="exaa-dano">${textoDoGolpe(p.final, dano, L, p.todos)}</p>
         ${acoes(botoes)}
       </div>`
     });

@@ -49,27 +49,41 @@ async function animar(...rolls) {
   for (const roll of rolls.filter(Boolean)) await game.dice3d.showForRoll(roll, game.user, true, null, false);
 }
 
+/** Ninguém rola mais de 10 dados, contando os EXA. */
+export const LIMITE_DADOS = 10;
+
 /** Monta o resultado de uma parada a partir dos valores já rolados. */
-function comporParada({ usaPior, numBase, base, exa }) {
+function comporParada({ usaPior, numBase, base, exa, cortados = 0, exaFora = 0 }) {
   const final = usaPior ? Math.min(...base) : Math.max(...base, ...exa);
-  return { usaPior, numBase, dadosEXA: exa.length, base, exa, final, todos: usaPior ? base : [...base, ...exa] };
+  return {
+    usaPior, numBase, dadosEXA: exa.length, base, exa, final, cortados, exaFora,
+    todos: usaPior ? base : [...base, ...exa]
+  };
 }
+
+/** Ainda cabe um dado EXA nesta parada? */
+export const cabeMaisUm = p => p.usaPior || p.base.length + p.exa.length < LIMITE_DADOS;
 
 /**
  * Rola uma parada de dados.
  * Base <= 0 sem EXApoints: 2d6, fica o menor. Com EXApoints, rolam-se só os dados EXA.
+ * A mão nunca passa de 10 dados: os base entram primeiro, e os EXA que não couberem não são rolados nem gastos.
  */
 export async function rolarParada(dadosBase, dadosEXA = 0) {
   const usaPior = dadosBase <= 0 && dadosEXA === 0;
-  const numBase = usaPior ? 2 : Math.min(10, Math.max(0, dadosBase));
+  const numBase = usaPior ? 2 : Math.min(LIMITE_DADOS, Math.max(0, dadosBase));
+  const numEXA = usaPior ? 0 : Math.min(dadosEXA, LIMITE_DADOS - numBase);
+  const cortados = Math.max(0, Math.max(0, dadosBase) + dadosEXA - LIMITE_DADOS);
   const rollBase = await rolar(numBase);
-  const rollEXA = await rolar(dadosEXA, true);
+  const rollEXA = await rolar(numEXA, true);
   await animar(rollBase, rollEXA);
-  return comporParada({ usaPior, numBase, base: valores(rollBase), exa: valores(rollEXA) });
+  return comporParada({
+    usaPior, numBase, base: valores(rollBase), exa: valores(rollEXA), cortados, exaFora: dadosEXA - numEXA
+  });
 }
 
 /**
- * Soma +1 dado EXA a uma parada já rolada.
+ * Soma +1 dado EXA a uma parada já rolada (quem chama confere antes se ainda cabe).
  * Se a parada era "sem dados" (2d6, fica o menor), ela dá lugar ao dado EXA, rolado normalmente.
  */
 export async function somarDadoEXA(p) {
@@ -117,19 +131,23 @@ export function resultadoTeste(valor) {
 
 /* ---------------- Combate ---------------- */
 
-/** Dano de um golpe. `poder` é o Porte da arma (Piloto) ou a Letalidade (Ameaça). */
+/**
+ * Dano de um golpe. `poder` é o Porte da arma (Piloto) ou a Letalidade (Ameaça).
+ * No crítico, +1 por 6, até o dobro do `poder`.
+ */
 export function danoDoGolpe(final, dados, poder) {
   if (final <= 1) return 0;
   if (final <= 3) return 1;
   if (final <= 5) return poder;
-  return poder + dados.filter(v => v === 6).length;
+  return poder + Math.min(poder, dados.filter(v => v === 6).length);
 }
 
-export function textoDoGolpe(final, dano, poder) {
+export function textoDoGolpe(final, dano, poder, dados = []) {
   if (final <= 1) return "Nenhum Dano. A guarda está aberta para um contra-ataque.";
   if (final <= 3) return "1 de Dano (raspão).";
   if (final <= 5) return `${dano} de Dano.`;
-  return `${poder} +${dano - poder} = ${dano} de Dano.`;
+  const limitado = dados.filter(v => v === 6).length > dano - poder;
+  return `${poder} +${dano - poder} = ${dano} de Dano${limitado ? " (máximo: o dobro)" : ""}.`;
 }
 
 /** Tokens marcados (alvos) pelo usuário no momento da rolagem. */
@@ -162,7 +180,7 @@ export const acoes = html => (html ? `<div class="exaa-acoes">${html}</div>` : "
 
 /**
  * Contra-ataque: quem contra-ataca rola os próprios dados; com 4 ou mais causa 1 de Dano, +1 por 6,
- * seja qual for a Letalidade ou o Porte.
+ * até o dobro (2), seja qual for a Letalidade ou o Porte.
  */
 export async function contraAtaque(contra, atacante, { modo = "corpo", modificador = 0 } = {}) {
   const { dados, detalhe: base } = contra.paradaDeContraAtaque(modo);
@@ -171,7 +189,10 @@ export async function contraAtaque(contra, atacante, { modo = "corpo", modificad
   let detalhe = base;
   if (mod !== 0) detalhe += ` + Mod (${mod > 0 ? "+" : ""}${mod})`;
   if (p.usaPior) detalhe += " = sem dados: 2d6, fica o menor";
-  const dano = p.final >= 4 ? 1 + (p.final === 6 ? p.todos.filter(v => v === 6).length : 0) : 0;
+  else if (p.cortados) detalhe += ` = ${p.numBase}d6 (limite de ${LIMITE_DADOS} dados)`;
+  // 1 de Dano, +1 por 6, até o dobro (2), como qualquer crítico
+  const seis = p.final === 6 ? p.todos.filter(v => v === 6).length : 0;
+  const dano = p.final >= 4 ? 1 + Math.min(1, seis) : 0;
 
   await ChatMessage.create({
     speaker: ChatMessage.getSpeaker({ actor: contra }),
@@ -179,7 +200,7 @@ export async function contraAtaque(contra, atacante, { modo = "corpo", modificad
       <p><strong>${contra.name}</strong> contra-ataca <strong>${atacante.name}</strong>!</p>
       <p class="exaa-detalhe">${detalhe}</p>
       ${htmlParada(p)}
-      <p class="exaa-resultado">${dano ? `Acertou: ${dano} de Dano.` : "O contra-ataque não acerta."}</p>
+      <p class="exaa-resultado">${dano ? `Acertou: ${dano} de Dano${seis > 1 ? " (máximo: o dobro)" : ""}.` : "O contra-ataque não acerta."}</p>
       ${acoes(botoesAplicar(dano, [{ uuid: atacante.uuid, nome: atacante.name }], contra.name))}
     </div>`
   });

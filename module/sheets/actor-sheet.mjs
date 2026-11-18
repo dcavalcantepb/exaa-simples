@@ -283,7 +283,7 @@ export class EXAAActorSheet extends ActorSheet {
             </div>` : "";
     const ajudaCampo = piloto ? `
             <div class="form-group">
-              <label>Ajuda (Pilotos ajudando)</label>
+              <label>Ajuda (Pilotos ajudando · com o Modificador, no máximo +3)</label>
               <select name="ajuda">
                 <option value="0" selected>Nenhuma</option>
                 <option value="1">1 Piloto (+1d)</option>

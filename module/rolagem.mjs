@@ -155,9 +155,10 @@ export function capturarAlvos() {
   return Array.from(game.user.targets).filter(t => t.actor).map(t => ({ uuid: t.actor.uuid, nome: t.name }));
 }
 
-export function botao(acao, label, dados = {}, classe = "") {
+export function botao(acao, label, dados = {}, classe = "", titulo = "") {
   const attrs = Object.entries(dados).map(([k, v]) => ` data-${k}="${esc(v)}"`).join("");
-  return `<button type="button" class="exaa-acao-btn ${classe}" data-acao="${acao}" data-id="${foundry.utils.randomID()}"${attrs}>${label}</button>`;
+  const title = titulo ? ` title="${esc(titulo)}"` : "";
+  return `<button type="button" class="exaa-acao-btn ${classe}" data-acao="${acao}" data-id="${foundry.utils.randomID()}"${attrs}${title}>${label}</button>`;
 }
 
 export function botoesAplicar(dano, alvos, fonte) {
@@ -172,8 +173,12 @@ export function botoesAplicar(dano, alvos, fonte) {
 
 /** Botões de contra-ataque após uma falha crítica de `atacante`. */
 export function botoesContra(atacante, alvos) {
-  if (!alvos.length) return botao("contra", "Contra-ataque (selecione o token do inimigo)", { atacante: atacante.uuid });
-  return alvos.map(a => botao("contra", `Contra-ataque de ${a.nome}`, { atacante: atacante.uuid, contra: a.uuid })).join("");
+  if (!alvos.length) {
+    return botao("contra", "⚔ Contra-ataque", { atacante: atacante.uuid }, "exaa-contra-btn",
+      "Selecione o token do inimigo que revida e clique aqui");
+  }
+  return alvos.map(a => botao("contra", `⚔ Contra-ataque: ${a.nome}`, { atacante: atacante.uuid, contra: a.uuid },
+    "exaa-contra-btn", `Contra-ataque de ${a.nome}`)).join("");
 }
 
 export const acoes = html => (html ? `<div class="exaa-acoes">${html}</div>` : "");
@@ -247,7 +252,7 @@ export function dialogoContraAtaque(contra, atacante) {
       },
       default: "roll",
       close: () => resolve(null)
-    }).render(true);
+    }, { width: 420 }).render(true);
   });
 }
 

@@ -1055,3 +1055,10 @@
   accent-color: #2DB87A;
 }
 .exaa .ameaca-dica { font-size: 0.8rem; font-style: italic; opacity: 0.8; margin: 4px 0 0; }
+
+/* Contra-ataque: sempre numa linha só; o nome completo fica na dica do botão */
+.exaa-acao-btn.exaa-contra-btn {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

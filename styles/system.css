@@ -1074,3 +1074,10 @@
   border-color: #E0A030;
   color: #E0A030;
 }
+
+/* Opções travadas pelo limite de vantagens: apagadas, para não parecerem clicáveis */
+.exaa select option:disabled,
+.exaa-dialog-form select option:disabled {
+  color: #5E4E7E;
+  background: #120B26;
+}

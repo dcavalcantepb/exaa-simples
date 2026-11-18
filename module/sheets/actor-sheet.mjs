@@ -283,7 +283,7 @@ export class EXAAActorSheet extends ActorSheet {
             </div>` : "";
     const ajudaCampo = piloto ? `
             <div class="form-group">
-              <label>Ajuda (Pilotos ajudando · com o Modificador, no máximo +3)</label>
+              <label>Ajuda</label>
               <select name="ajuda">
                 <option value="0" selected>Nenhuma</option>
                 <option value="1">1 Piloto (+1d)</option>
@@ -335,9 +335,26 @@ export class EXAAActorSheet extends ActorSheet {
           }
         },
         default: "roll",
+        render: html => this._travarVantagens(html),
         close: () => resolve(null)
       }).render(true);
     });
+  }
+
+  /**
+   * Modificador + Ajuda somam no máximo +3: cada lista desabilita as opções que estourariam o limite com a outra.
+   */
+  _travarVantagens(html) {
+    const mod = html.find("[name='modificador']")[0];
+    const ajuda = html.find("[name='ajuda']")[0];
+    if (!mod || !ajuda) return;
+    const travar = () => {
+      for (const opt of ajuda.options) opt.disabled = Number(opt.value) + Number(mod.value) > 3;
+      for (const opt of mod.options) opt.disabled = Number(opt.value) + Number(ajuda.value) > 3;
+    };
+    mod.addEventListener("change", travar);
+    ajuda.addEventListener("change", travar);
+    travar();
   }
 
   async _abrirDialogoEXA(maxEXA) {

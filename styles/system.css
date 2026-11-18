@@ -1343,3 +1343,6 @@
 .exaa-retrato .profile-img { box-sizing: border-box; }
 /* Sem Marcas, a mancha nem é desenhada (o filtro de fumaça é a parte mais pesada) */
 .exaa-retrato.marcas-0 .mancha-wrap { display: none; }
+
+/* Condição no topo da aba Piloto: espaço antes dos Atributos */
+.exaa .secao-condicao + .atributos-habilidades-grid { margin-top: 14px; }

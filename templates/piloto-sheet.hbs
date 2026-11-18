@@ -49,6 +49,20 @@
   <section class="sheet-body">
     <div class="tab" data-group="primary" data-tab="piloto">
 
+      <section class="secao-condicao">
+        <h2>Condição</h2>
+        <div class="dano-field dano-cor-{{nivelPiloto}}">
+          <span class="dano-label-text">Piloto — {{condicaoPiloto}}</span>
+          {{{ecgPiloto}}}
+          <div class="stepper">
+            <button type="button" class="stepper-btn" data-action="minus" data-field="system.dano.piloto.value" data-max="3">−</button>
+            <span class="stepper-val">{{system.dano.piloto.value}}</span>
+            <button type="button" class="stepper-btn" data-action="plus" data-field="system.dano.piloto.value" data-max="3">+</button>
+            <button type="button" class="botao-morte{{#if morto}} ativo{{/if}}" data-morte="piloto" title="Morto">{{{iconeCaveira}}}</button>
+          </div>
+        </div>
+      </section>
+
       <div class="atributos-habilidades-grid">
         {{#each gruposHabilidades}}
         <div class="atributo-grupo">
@@ -80,20 +94,6 @@
       {{#unless distribuicaoValida}}
       <p class="distribuicao-erro">Distribuição de pontos incorreta. Contate seu Operador.</p>
       {{/unless}}
-
-      <section class="secao-condicao">
-        <h2>Condição</h2>
-        <div class="dano-field dano-cor-{{nivelPiloto}}">
-          <span class="dano-label-text">Piloto — {{condicaoPiloto}}</span>
-          {{{ecgPiloto}}}
-          <div class="stepper">
-            <button type="button" class="stepper-btn" data-action="minus" data-field="system.dano.piloto.value" data-max="3">−</button>
-            <span class="stepper-val">{{system.dano.piloto.value}}</span>
-            <button type="button" class="stepper-btn" data-action="plus" data-field="system.dano.piloto.value" data-max="3">+</button>
-            <button type="button" class="botao-morte{{#if morto}} ativo{{/if}}" data-morte="piloto" title="Morto">{{{iconeCaveira}}}</button>
-          </div>
-        </div>
-      </section>
 
       <section class="secao-defeitos">
         <h2>Defeitos</h2>

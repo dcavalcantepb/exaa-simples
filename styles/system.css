@@ -1062,3 +1062,15 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* Dado decisivo numa falha: vermelho na falha crítica, âmbar na falha comum (vale também para o dado EXA) */
+.exaa-die.winner.falha-critica {
+  background: #1E0A10;
+  border-color: #E85070;
+  color: #E85070;
+}
+.exaa-die.winner.falha {
+  background: #241A06;
+  border-color: #E0A030;
+  color: #E0A030;
+}

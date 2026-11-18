@@ -99,10 +99,12 @@ export async function somarDadoEXA(p) {
 /** HTML dos grupos de dados, destacando o dado que decidiu o resultado. */
 export function htmlParada(p) {
   let achou = false;
+  // O destaque do dado decisivo acompanha o resultado: verde só quando é sucesso
+  const tom = p.final <= 1 ? " falha-critica" : p.final <= 3 ? " falha" : "";
   const render = (lista, isEXA) => lista.map(v => {
     let cls = `exaa-die${isEXA ? " exa" : ""}`;
     if (isEXA && v === 1) cls += " miss";
-    if (!achou && v === p.final) { cls += " winner"; achou = true; }
+    if (!achou && v === p.final) { cls += ` winner${tom}`; achou = true; }
     return `<span class="${cls}">${v}</span>`;
   }).join("");
 

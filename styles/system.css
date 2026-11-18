@@ -759,10 +759,12 @@
   color: #2DB87A;
 }
 
+/* Dado EXA vencedor: verde como qualquer vencedor, com um contorno roxo que lembra que é EXA */
 .exaa-die.exa.winner {
-  background: #2A1040;
-  border-color: #9B5FE0;
-  color: #D4B8FF;
+  background: #0D2818;
+  border-color: #2DB87A;
+  color: #2DB87A;
+  box-shadow: 0 0 0 2px #7D29F2;
 }
 
 /* Dado EXA com 1 (perda de EXApoint) */
